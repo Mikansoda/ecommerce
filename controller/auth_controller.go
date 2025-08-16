@@ -1,0 +1,119 @@
+package controller
+
+import (
+	"net/http"
+
+	"marketplace/service"
+	"github.com/gin-gonic/gin"
+)
+
+type AuthController struct {
+	svc service.AuthService
+}
+
+func NewAuthController(svc service.AuthService) *AuthController {
+	return &AuthController{svc: svc}
+}
+
+// Struct request untuk endpoint register, verify, login, dan refresh
+type registerReq struct {
+	Email    string `json:"email" binding:"required,email"`
+    Username string `json:"username" binding:"required,min=8,max=20,alphanum"`
+	Password string `json:"password" binding:"required,min=6"`
+}
+
+type verifyReq struct {
+	Email string `json:"email" binding:"required,email"`
+	OTP   string `json:"otp" binding:"required"`
+}
+
+type loginReq struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
+}
+
+type refreshReq struct {
+	RefreshToken string `json:"refresh_token" binding:"required"`
+}
+
+// Register
+func (a *AuthController) Register(c *gin.Context) {
+	var req registerReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := a.svc.Register(c, req.Username, req.Email, req.Password, "user"); err != nil {
+    c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+    return
+    }
+	c.JSON(http.StatusCreated, gin.H{"message": "registered, check your email for OTP"})
+}
+
+// Verify OTP
+func (a *AuthController) VerifyOTP(c *gin.Context) {
+	var req verifyReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	if err := a.svc.VerifyOTP(c, req.Email, req.OTP); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "account verified"})
+}
+
+// Login
+func (a *AuthController) Login(c *gin.Context) {
+	var req loginReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	access, refresh, err := a.svc.Login(c, req.Email, req.Password)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"access_token":  access,
+		"refresh_token": refresh,
+	})
+}
+
+// Refresh token u/ otomatis refresh 
+func (a *AuthController) Refresh(c *gin.Context) {
+	var req refreshReq
+	if err := c.ShouldBindJSON(&req); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	access, refresh, err := a.svc.Refresh(c, req.RefreshToken)
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"access_token":  access,
+		"refresh_token": refresh,
+	})
+}
+
+// Log out
+func (a *AuthController) Logout(c *gin.Context) {
+	bearer := c.GetHeader("Authorization")
+	var token string
+	if len(bearer) > 7 && bearer[:7] == "Bearer " {
+		token = bearer[7:]
+	}
+	if token == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "missing access token"})
+		return
+	}
+	if err := a.svc.Logout(c, token); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "logged out"})
+}

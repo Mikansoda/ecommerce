@@ -4,9 +4,11 @@ import (
 	"log"
 	"marketplace/config"
 	"marketplace/entity"
-	"gorm.io/gorm"
-
+	"marketplace/routes"
 	"github.com/joho/godotenv"
+	// "github.com/gin-gonic/gin"
+
+	"gorm.io/gorm"
 )
 
 // Note: Understanding db
@@ -25,7 +27,6 @@ import (
 // PaymentID    *uuid.UUID `gorm:"type:char(36);null" json:"payment_id,omitempty"`
 // Payment   *Payment   `gorm:"foreignKey:PaymentID;references:ID" json:"payment,omitempty"`
 // run main.go, db should be created w/o conflict, then un-comment both, finish.
-
 
 // Function to create a table if one does not exist yet, using interface as it will receive many different struct model (users, admins, etc.)
 func CreateTableIfNotExists(db *gorm.DB, model interface{}) error {
@@ -51,10 +52,7 @@ func CreateTableIfNotExists(db *gorm.DB, model interface{}) error {
 // in short, db is a database connection that you can use to access and manage databases via GORM.
 func MigrateTables(db *gorm.DB) error {
 	// Create User and Admin table first manually, using function made above, pointer to struct User made in entity.
-	if err := CreateTableIfNotExists(db, &entity.User{}); err != nil {
-		return err
-	}
-	if err := CreateTableIfNotExists(db, &entity.Admin{}); err != nil {
+	if err := CreateTableIfNotExists(db, &entity.UsersAndAdmins{}); err != nil {
 		return err
 	}
 
@@ -62,21 +60,13 @@ func MigrateTables(db *gorm.DB) error {
 	// This line will automigrate list of parameters (arguments) to be migrated, stored inside ().
 	if err := db.AutoMigrate(
 		// List the struct models/arguments that will be migrated to a db.
-		&entity.UserOTP{},
-		&entity.AdminOTP{},
+		&entity.Address{},
 		// if value of err not nil, then return error message
 	); err != nil {
 		return err
 	}
 
-	// The rest of the code till func MigrateDatabase has the same pattern, etc., sans the struct models name 
-	if err := db.AutoMigrate(
-		&entity.Address{},
-		&entity.UserBalance{},
-		&entity.UserFavorite{},
-	); err != nil {
-		return err
-	}
+	// The rest of the code till func MigrateDatabase has the same pattern, etc., sans the struct models name
 
 	if err := db.AutoMigrate(
 		&entity.Product{},
@@ -89,7 +79,6 @@ func MigrateTables(db *gorm.DB) error {
 
 	if err := db.AutoMigrate(
 		&entity.Payment{},
-		&entity.Topup{},
 	); err != nil {
 		return err
 	}
@@ -114,23 +103,8 @@ func MigrateTables(db *gorm.DB) error {
 }
 
 // This creates a function called MigrateDatabase, tasked to manage the database migration process from start to finish.
-func MigrateDatabase() {
-	// Load the .env file containing environment variables such as database username, password, etc. The results are stored in the err variable to check whether the process was successful/not.
-	err := godotenv.Load()
-	// if value of err is not nill, return message as written below. 
-	if err != nil {
-		log.Fatal("Error loading ENV file")
-	}
-	// to use the ConnectDatabase() function in the **config package** to connect the application to the database. The connection result is stored in the db variable.
-	db := config.ConnectDatabase()
-
-	// to use the MigrateTables function and provide the db (database connection) as a parameter to run the migration process for the tables in the database. Any errors (if any) are stored in the err variable.
-	// db is the path or communication tool for "talking" to the database.
-	// All database operations, including table migration, require a database connection to run.
-	// So, with by providing db (connection to TARGET db) to the migration function, it'll instruct the function to know which db to operate on.
-	// For example, if there's multiple databases available in SQL (or any), simply provide the appropriate db so the function knows which one to target.
-	// Without a db, the MigrateTables function can't run because it lacks a connection to access the database.
-	err = MigrateTables(db)
+func MigrateDatabase(db *gorm.DB) {
+	err := MigrateTables(db)
 	if err != nil {
 		log.Fatal("Failed to migrate database: ", err)
 	}
@@ -138,5 +112,16 @@ func MigrateDatabase() {
 }
 
 func main() {
-	MigrateDatabase()
+	// gin.SetMode(gin.ReleaseMode)
+	_ = godotenv.Load()
+	config.Init()
+	db := config.ConnectDatabase() // dapetin koneksi DB
+
+	MigrateDatabase(db) // modif biar MigrateDatabase nerima parameter db
+
+	r := routes.SetupRouter(db) // passing koneksi langsung, nggak pake config.DB global
+	log.Println("listening on :" + config.C.AppPort)
+	if err := r.Run(":" + config.C.AppPort); err != nil {
+		log.Fatal(err)
+	}
 }

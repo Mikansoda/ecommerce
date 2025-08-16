@@ -13,8 +13,8 @@ type Cart struct {
 	UpdatedAt time.Time  `gorm:"autoUpdateTime" json:"updated_at"`
 
 	// Relations
-	User  *User       `gorm:"foreignKey:UserID" json:"-"`
-	Items []CartItem  `gorm:"foreignKey:CartID" json:"items,omitempty"`
+	User     *UsersAndAdmins       `gorm:"foreignKey:UserID" json:"-"`
+	Items   []CartItem  `gorm:"foreignKey:CartID" json:"items,omitempty"`
 }
 
 // Entity table for items within each carts
@@ -25,7 +25,7 @@ type CartItem struct {
 	Quantity  int        `gorm:"not null" json:"quantity"`
 
 	// Relations
-	Cart    *Cart    `gorm:"foreignKey:CartID" json:"-"`
-	Product *Product `gorm:"foreignKey:ProductID" json:"product,omitempty"`
+	Cart     *Cart    `gorm:"foreignKey:CartID" json:"-"`
+	Product  *Product `gorm:"foreignKey:ProductID" json:"product,omitempty"`
 }
 

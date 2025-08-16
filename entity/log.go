@@ -3,6 +3,8 @@ package entity
 import (
 	"time"
 	"github.com/google/uuid"
+	"gorm.io/gorm"
+
 )
 
 // Entity table for logging actions performed by users or admins
@@ -15,4 +17,8 @@ type ActionLog struct {
 	EntityID    string    `gorm:"type:varchar(100);not null" json:"entity_id"`
 	Description string    `gorm:"type:text" json:"description"`
 	CreatedAt   time.Time `gorm:"autoCreateTime" json:"created_at"`
+	DeletedAt   gorm.DeletedAt `gorm:"index" json:"-"`  // for soft deletion
+
+	// Relation
+    User       *UsersAndAdmins `gorm:"foreignKey:ActorID" json:"-"`
 }
