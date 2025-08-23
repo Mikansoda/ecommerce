@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"time"
 	"errors"
+	"time"
 
-	"marketplace/entity"
-	"marketplace/repository"
+	"ecommerce/entity"
+	"ecommerce/repository"
 )
 
 type ProductService interface {
@@ -30,28 +30,54 @@ func NewProductService(repo repository.ProductRepository) ProductService {
 func (s *productService) CreateProduct(ctx context.Context, p *entity.Product) error {
 	p.CreatedAt = time.Now()
 	p.UpdatedAt = time.Now()
-	return s.repo.Create(ctx, p)
+
+	// optional transaction usage
+	if err := s.repo.Create(ctx, p); err != nil {
+		return errors.New("failed to create product: " + err.Error())
+	}
+	return nil
 }
 
 func (s *productService) GetProductByID(ctx context.Context, id uint) (*entity.Product, error) {
-	return s.repo.GetByProductID(ctx, id)
+	product, err := s.repo.GetByProductID(ctx, id)
+	if err != nil {
+		return nil, errors.New("failed to fetch product: " + err.Error())
+	}
+	if product == nil {
+		return nil, errors.New("product not found")
+	}
+	return product, nil
 }
 
 func (s *productService) GetProductByIDIncludeDeleted(ctx context.Context, id uint) (*entity.Product, error) {
-	return s.repo.GetByIDIncludeDeleted(ctx, id)
+	product, err := s.repo.GetByIDIncludeDeleted(ctx, id)
+	if err != nil {
+		return nil, errors.New("failed to fetch product: " + err.Error())
+	}
+	if product == nil {
+		return nil, errors.New("product not found")
+	}
+	return product, nil
 }
 
 func (s *productService) GetProducts(ctx context.Context, search, category string, limit, offset int) ([]entity.Product, error) {
-	return s.repo.GetProducts(ctx, search, category, limit, offset)
+	products, err := s.repo.GetProducts(ctx, search, category, limit, offset)
+	if err != nil {
+		return nil, errors.New("failed to fetch products: " + err.Error())
+	}
+	return products, nil
 }
 
 func (s *productService) UpdateProduct(ctx context.Context, p *entity.Product) error {
 	existing, err := s.repo.GetByIDIncludeDeleted(ctx, p.ID)
 	if err != nil {
-		return err
+		return errors.New("failed to fetch product: " + err.Error())
+	}
+	if existing == nil {
+		return errors.New("product not found")
 	}
 
-	// Update fiekds sesuai yg di input aja
+	// Update fields
 	if p.Name != "" {
 		existing.Name = p.Name
 	}
@@ -64,28 +90,45 @@ func (s *productService) UpdateProduct(ctx context.Context, p *entity.Product) e
 	if p.Stock != 0 {
 		existing.Stock = p.Stock
 	}
-
-	existing.UpdatedAt = time.Now()
-
 	if p.Categories != nil {
 		existing.Categories = p.Categories
 	}
+	if p.ExpiryYear != nil {
+		existing.ExpiryYear = p.ExpiryYear
+	}
+	existing.UpdatedAt = time.Now()
 
-	return s.repo.Update(ctx, existing)
+	// optional transaction usage
+	if err := s.repo.Update(ctx, existing); err != nil {
+		return errors.New("failed to update product: " + err.Error())
+	}
+	return nil
 }
 
 func (s *productService) DeleteProduct(ctx context.Context, id uint) error {
-	existing, _ := s.repo.GetByProductID(ctx, id)
-	if existing == nil {
-		return errors.New("address not found")
+	existing, err := s.repo.GetByProductID(ctx, id)
+	if err != nil {
+		return errors.New("failed to fetch product: " + err.Error())
 	}
-	return s.repo.Delete(ctx, id)
+	if existing == nil {
+		return errors.New("product not found")
+	}
+	if err := s.repo.Delete(ctx, id); err != nil {
+		return errors.New("failed to delete product: " + err.Error())
+	}
+	return nil
 }
 
 func (s *productService) RecoverProduct(ctx context.Context, id uint) error {
-	existing, _ := s.repo.GetByIDIncludeDeleted(ctx, id)
-	if existing == nil {
-		return errors.New("address not found")
+	existing, err := s.repo.GetByIDIncludeDeleted(ctx, id)
+	if err != nil {
+		return errors.New("failed to fetch product: " + err.Error())
 	}
-	return s.repo.Recover(ctx, id)
+	if existing == nil {
+		return errors.New("product not found")
+	}
+	if err := s.repo.Recover(ctx, id); err != nil {
+		return errors.New("failed to recover product: " + err.Error())
+	}
+	return nil
 }

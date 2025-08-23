@@ -2,31 +2,31 @@ package config
 
 import (
 	"log"
-	"os"
-	"strconv"
-	"fmt"
+	"os" 
+	"strconv" 
+	"fmt" 
 )
 
 type AppConfig struct {
-	AppPort        string
-	DBDSN          string // user:pass@tcp(host:3306)/dbname?parseTime=true&loc=Local
-	JWTAccessKey   string
+	AppPort        string 
+	DBDSN          string 
+	JWTAccessKey   string 
 	JWTRefreshKey  string
-	AccessTTLMin   int
-	RefreshTTLDays int
-	SMTPHost       string
-	SMTPPort       int
-	SMTPUser       string
-	SMTPPass       string
-	FromEmail      string
-	Env            string // type dev/prod
+	AccessTTLMin   int 
+	RefreshTTLDays int 
+	SMTPHost       string 
+	SMTPPort       int 
+	SMTPUser       string 
+	SMTPPass       string 
+	FromEmail      string 
+	Env            string 
 }
 
 var C AppConfig
 
 func Init() {
 	C = AppConfig{
-		AppPort:        getenv("APP_PORT", "8080"),
+		AppPort: getenv("APP_PORT", "8080"),
 		DBDSN: getenv("DB_DSN", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local",
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASSWORD"),

@@ -2,13 +2,14 @@ package routes
 
 import (
 	"net/http"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	"marketplace/controller"
-	"marketplace/middleware"
-	"marketplace/repository"
-	"marketplace/service"
+	"ecommerce/controller"
+	"ecommerce/middleware"
+	"ecommerce/repository"
+	"ecommerce/service"
 )
 
 func RegisterAuthRoutes(r *gin.Engine, db *gorm.DB) {
@@ -26,14 +27,14 @@ func RegisterAuthRoutes(r *gin.Engine, db *gorm.DB) {
 
 		authApi.GET("/profile", middleware.Auth("user", "admin"), func(c *gin.Context) {
 			c.JSON(http.StatusOK, gin.H{
-				"uid":   c.GetString("uid"),
-				"email": c.GetString("email"),
-				"role":  c.GetString("role"),
+				"userID": c.GetString("userID"),
+				"email":  c.GetString("email"),
+				"role":   c.GetString("role"),
 			})
 		})
 
 		authApi.GET("/admin/dashboard", middleware.Auth("admin"), func(c *gin.Context) {
-			c.JSON(http.StatusOK, gin.H{"msg": "Welcome to admin dashboard"})
+			c.JSON(http.StatusOK, gin.H{"message": "Welcome to admin dashboard"})
 		})
 	}
 }

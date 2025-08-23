@@ -3,15 +3,15 @@ package repository
 import (
 	"context"
 
-	"marketplace/entity"
+	"ecommerce/entity"
+
 	"gorm.io/gorm"
 )
 
 type CategoryRepository interface {
 	Create(ctx context.Context, c *entity.ProductCategory) error
-	GetByCategoryID(ctx context.Context, id uint) (*entity.ProductCategory, error)
-	GetByIDIncludeDeleted(ctx context.Context, id uint) (*entity.ProductCategory, error)
 	GetCategories(ctx context.Context, limit, offset int) ([]entity.ProductCategory, error)
+	GetByIDIncludeDeleted(ctx context.Context, id uint) (*entity.ProductCategory, error)
 	Update(ctx context.Context, c *entity.ProductCategory) error
 	Delete(ctx context.Context, id uint) error
 	Recover(ctx context.Context, id uint) error
@@ -30,27 +30,21 @@ func (r *categoryRepo) Create(ctx context.Context, c *entity.ProductCategory) er
 }
 
 func (r *categoryRepo) GetCategories(ctx context.Context, limit, offset int) ([]entity.ProductCategory, error) {
-    var categories []entity.ProductCategory
-    if err := r.db.WithContext(ctx).
-        Limit(limit).
-        Offset(offset).
-        Find(&categories).Error; err != nil {
-        return nil, err
-    }
-    return categories, nil
-}
-
-func (r *categoryRepo) GetByCategoryID(ctx context.Context, id uint) (*entity.ProductCategory, error) {
-	var c entity.ProductCategory
-	if err := r.db.WithContext(ctx).First(&c, id).Error; err != nil {
+	var categories []entity.ProductCategory
+	if err := r.db.WithContext(ctx).
+		Limit(limit).
+		Offset(offset).
+		Find(&categories).Error; err != nil {
 		return nil, err
 	}
-	return &c, nil
+	return categories, nil
 }
 
 func (r *categoryRepo) GetByIDIncludeDeleted(ctx context.Context, id uint) (*entity.ProductCategory, error) {
 	var c entity.ProductCategory
-	if err := r.db.WithContext(ctx).Unscoped().First(&c, id).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Unscoped().
+		First(&c, id).Error; err != nil {
 		return nil, err
 	}
 	return &c, nil

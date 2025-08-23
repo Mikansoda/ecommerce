@@ -2,15 +2,15 @@ package service
 
 import (
 	"context"
+	"errors"
 	"time"
 
-	"marketplace/entity"
-	"marketplace/repository"
+	"ecommerce/entity"
+	"ecommerce/repository"
 )
 
 type CategoryService interface {
 	CreateCategory(ctx context.Context, c *entity.ProductCategory) error
-	GetCategoryByID(ctx context.Context, id uint) (*entity.ProductCategory, error)
 	GetCategoryByIDIncludeDeleted(ctx context.Context, id uint) (*entity.ProductCategory, error)
 	GetCategories(ctx context.Context, limit, offset int) ([]entity.ProductCategory, error)
 	UpdateCategory(ctx context.Context, c *entity.ProductCategory) error
@@ -29,44 +29,78 @@ func NewCategoryService(repo repository.CategoryRepository) CategoryService {
 func (s *categoryService) CreateCategory(ctx context.Context, c *entity.ProductCategory) error {
 	c.CreatedAt = time.Now()
 	c.UpdatedAt = time.Now()
-	return s.repo.Create(ctx, c)
-}
-
-func (s *categoryService) GetCategoryByID(ctx context.Context, id uint) (*entity.ProductCategory, error) {
-	return s.repo.GetByCategoryID(ctx, id)
+	if err := s.repo.Create(ctx, c); err != nil {
+		return errors.New("failed to create category: " + err.Error())
+	}
+	return nil
 }
 
 func (s *categoryService) GetCategoryByIDIncludeDeleted(ctx context.Context, id uint) (*entity.ProductCategory, error) {
-	return s.repo.GetByIDIncludeDeleted(ctx, id)
+	cat, err := s.repo.GetByIDIncludeDeleted(ctx, id)
+	if err != nil {
+		return nil, errors.New("failed to fetch category: " + err.Error())
+	}
+	if cat == nil {
+		return nil, errors.New("category not found")
+	}
+	return cat, nil
 }
 
 func (s *categoryService) GetCategories(ctx context.Context, limit, offset int) ([]entity.ProductCategory, error) {
-	return s.repo.GetCategories(ctx, limit, offset)
+	categories, err := s.repo.GetCategories(ctx, limit, offset)
+	if err != nil {
+		return nil, errors.New("failed to fetch categories: " + err.Error())
+	}
+	return categories, nil
 }
 
 func (s *categoryService) UpdateCategory(ctx context.Context, c *entity.ProductCategory) error {
 	existing, err := s.repo.GetByIDIncludeDeleted(ctx, c.ID)
 	if err != nil {
-		return err
+		return errors.New("failed to fetch category: " + err.Error())
 	}
-	
-    // Update fields
+	if existing == nil {
+		return errors.New("category not found")
+	}
+
+	// Update fields
 	existing.Name = c.Name
 	existing.Description = c.Description
 	existing.UpdatedAt = time.Now()
-    
-	// Update categories sesuai yg di input aja
 	if c.Products != nil {
 		existing.Products = c.Products
 	}
 
-	return s.repo.Update(ctx, existing)
+	if err := s.repo.Update(ctx, existing); err != nil {
+		return errors.New("failed to update category: " + err.Error())
+	}
+	return nil
 }
 
 func (s *categoryService) DeleteCategory(ctx context.Context, id uint) error {
-	return s.repo.Delete(ctx, id)
+	existing, err := s.repo.GetByIDIncludeDeleted(ctx, id)
+	if err != nil {
+		return errors.New("failed to fetch category: " + err.Error())
+	}
+	if existing == nil {
+		return errors.New("category not found")
+	}
+	if err := s.repo.Delete(ctx, id); err != nil {
+		return errors.New("failed to delete category: " + err.Error())
+	}
+	return nil
 }
 
 func (s *categoryService) RecoverCategory(ctx context.Context, id uint) error {
-	return s.repo.Recover(ctx, id)
+	existing, err := s.repo.GetByIDIncludeDeleted(ctx, id)
+	if err != nil {
+		return errors.New("failed to fetch category: " + err.Error())
+	}
+	if existing == nil {
+		return errors.New("category not found")
+	}
+	if err := s.repo.Recover(ctx, id); err != nil {
+		return errors.New("failed to recover category: " + err.Error())
+	}
+	return nil
 }

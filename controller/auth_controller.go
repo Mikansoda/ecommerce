@@ -3,22 +3,23 @@ package controller
 import (
 	"net/http"
 
-	"marketplace/service"
+	"ecommerce/service"
+
 	"github.com/gin-gonic/gin"
 )
 
 type AuthController struct {
-	svc service.AuthService
+	service service.AuthService
 }
 
-func NewAuthController(svc service.AuthService) *AuthController {
-	return &AuthController{svc: svc}
+func NewAuthController(s service.AuthService) *AuthController {
+	return &AuthController{service: s}
 }
 
-// Struct request untuk endpoint register, verify, login, dan refresh
+// Struct request for endpoint register, verify, login, and refresh
 type registerReq struct {
 	Email    string `json:"email" binding:"required,email"`
-    Username string `json:"username" binding:"required,min=8,max=20,alphanum"`
+	Username string `json:"username" binding:"required,min=8,max=20,alphanum"`
 	Password string `json:"password" binding:"required,min=6"`
 }
 
@@ -40,60 +41,96 @@ type refreshReq struct {
 func (a *AuthController) Register(c *gin.Context) {
 	var req registerReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input data",
+			"detail":  err.Error(),
+		})
 		return
 	}
-	if err := a.svc.Register(c, req.Username, req.Email, req.Password, "user"); err != nil {
-    c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-    return
-    }
-	c.JSON(http.StatusCreated, gin.H{"message": "registered, check your email for OTP"})
+
+	if err := a.service.Register(c, req.Username, req.Email, req.Password, "user"); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Failed to register, try again",
+			"detail":  err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{
+		"message": "Registered successfully, check your email for OTP",
+	})
 }
 
 // Verify OTP
 func (a *AuthController) VerifyOTP(c *gin.Context) {
 	var req verifyReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input data",
+			"detail":  err.Error(),
+		})
 		return
 	}
-	if err := a.svc.VerifyOTP(c, req.Email, req.OTP); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	if err := a.service.VerifyOTP(c, req.Email, req.OTP); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Failed to verify OTP",
+			"detail":  err.Error(),
+		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "account verified"})
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Account successfully verified",
+	})
 }
 
 // Login
 func (a *AuthController) Login(c *gin.Context) {
 	var req loginReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input data",
+			"detail":  err.Error(),
+		})
 		return
 	}
-	access, refresh, err := a.svc.Login(c, req.Email, req.Password)
+
+	access, refresh, err := a.service.Login(c, req.Email, req.Password)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Login failed",
+			"detail":  err.Error(),
+		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"access_token":  access,
 		"refresh_token": refresh,
 	})
 }
 
-// Refresh token u/ otomatis refresh 
+// Refresh token
 func (a *AuthController) Refresh(c *gin.Context) {
 	var req refreshReq
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Invalid input data",
+			"detail":  err.Error(),
+		})
 		return
 	}
-	access, refresh, err := a.svc.Refresh(c, req.RefreshToken)
+
+	access, refresh, err := a.service.Refresh(c, req.RefreshToken)
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"message": "Failed to refresh token",
+			"detail":  err.Error(),
+		})
 		return
 	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"access_token":  access,
 		"refresh_token": refresh,
@@ -108,12 +145,21 @@ func (a *AuthController) Logout(c *gin.Context) {
 		token = bearer[7:]
 	}
 	if token == "" {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "missing access token"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Missing access token",
+		})
 		return
 	}
-	if err := a.svc.Logout(c, token); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+	if err := a.service.Logout(c, token); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "Failed to logout",
+			"detail":  err.Error(),
+		})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "logged out"})
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Logged out successfully",
+	})
 }

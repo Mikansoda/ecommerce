@@ -3,8 +3,8 @@ package config
 import (
 	"fmt"
 
-	"gorm.io/driver/mysql" // for GORM yo connect to MySQL db
-	"gorm.io/gorm" // GORM
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm" 
 )
 
 func ConnectDatabase() *gorm.DB {

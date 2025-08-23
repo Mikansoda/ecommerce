@@ -4,15 +4,16 @@ import (
 	"context"
 	"time"
 
-	"marketplace/entity"
+	"ecommerce/entity"
+
 	"gorm.io/gorm"
 )
 
 type UserRepository interface {
-	Create(ctx context.Context, u *entity.UsersAndAdmins) error
-	FindByEmail(ctx context.Context, email string) (*entity.UsersAndAdmins, error)
-	FindByUsername(ctx context.Context, username string) (*entity.UsersAndAdmins, error)
-	Update(ctx context.Context, u *entity.UsersAndAdmins) error
+	Create(ctx context.Context, u *entity.Users) error
+	FindByEmail(ctx context.Context, email string) (*entity.Users, error)
+	FindByUsername(ctx context.Context, username string) (*entity.Users, error)
+	Update(ctx context.Context, u *entity.Users) error
 }
 
 type userRepository struct {
@@ -23,12 +24,12 @@ func NewUserRepository(db *gorm.DB) UserRepository {
 	return &userRepository{db: db}
 }
 
-func (r *userRepository) Create(ctx context.Context, u *entity.UsersAndAdmins) error {
+func (r *userRepository) Create(ctx context.Context, u *entity.Users) error {
 	return r.db.WithContext(ctx).Create(u).Error
 }
 
-func (r *userRepository) FindByEmail(ctx context.Context, email string) (*entity.UsersAndAdmins, error) {
-	var u entity.UsersAndAdmins
+func (r *userRepository) FindByEmail(ctx context.Context, email string) (*entity.Users, error) {
+	var u entity.Users
 	err := r.db.WithContext(ctx).Where("email = ?", email).First(&u).Error
 	if err != nil {
 		return nil, err
@@ -36,8 +37,8 @@ func (r *userRepository) FindByEmail(ctx context.Context, email string) (*entity
 	return &u, nil
 }
 
-func (r *userRepository) FindByUsername(ctx context.Context, username string) (*entity.UsersAndAdmins, error) {
-	var u entity.UsersAndAdmins
+func (r *userRepository) FindByUsername(ctx context.Context, username string) (*entity.Users, error) {
+	var u entity.Users
 	err := r.db.WithContext(ctx).Where("username = ?", username).First(&u).Error
 	if err != nil {
 		return nil, err
@@ -45,7 +46,7 @@ func (r *userRepository) FindByUsername(ctx context.Context, username string) (*
 	return &u, nil
 }
 
-func (r *userRepository) Update(ctx context.Context, u *entity.UsersAndAdmins) error {
+func (r *userRepository) Update(ctx context.Context, u *entity.Users) error {
 	u.UpdatedAt = time.Now()
 	return r.db.WithContext(ctx).Save(u).Error
 }

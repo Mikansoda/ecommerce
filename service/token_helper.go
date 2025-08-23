@@ -1,10 +1,11 @@
 package service
 
 import (
-	"time"
 	"errors"
+	"time"
 
-	"marketplace/config"
+	"ecommerce/config"
+
 	"github.com/golang-jwt/jwt/v5"
 )
 

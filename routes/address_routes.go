@@ -1,10 +1,11 @@
 package routes
 
 import (
-	"marketplace/controller"
-	"marketplace/middleware"
-	"marketplace/repository"
-	"marketplace/service"
+	"ecommerce/controller"
+	"ecommerce/middleware"
+	"ecommerce/repository"
+	"ecommerce/service"
+
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 )
@@ -15,18 +16,18 @@ func RegisterAddressRoutes(r *gin.Engine, db *gorm.DB) {
 	addressCtl := controller.NewAddressController(addressSvc)
 
 	// user routes
-	addressApi := r.Group("/addresses", middleware.Auth("user", "admin"))
+	addressApi := r.Group("/user", middleware.Auth("user"))
 	{
-		addressApi.POST("/", addressCtl.CreateAddress)
-		addressApi.GET("/", addressCtl.GetUserAddress)  // get address user sendiri
-		addressApi.PATCH("/", addressCtl.UpdateAddress)          // update address user sendiri
-		addressApi.DELETE("/:id", addressCtl.DeleteAddress)         // delete address user sendiri
-		addressApi.POST("/recover/:id", addressCtl.RecoverAddress)
+		addressApi.POST("/addresses", addressCtl.CreateAddress)
+		addressApi.GET("/addresses", addressCtl.GetUserAddress) // get address by user
+		addressApi.PATCH("/addresses", addressCtl.UpdateAddress)
+		addressApi.DELETE("/addresses/:id", addressCtl.DeleteAddress)
 	}
 
-	// admin routes
+	// Admin-protected routes
 	adminApi := r.Group("/admin", middleware.Auth("admin"))
-	{
-		adminApi.GET("/addresses", addressCtl.GetAddresses) // get semua address
+	{   // GET /admin/addresses?search=Jakarta&limit=5&offset=10
+		adminApi.GET("/addresses", addressCtl.GetAddresses) // get all addresses
+		adminApi.POST("/addresses/:id/recover", addressCtl.RecoverAddress)
 	}
 }

@@ -5,15 +5,16 @@ import (
 	"crypto/rand"
 	"encoding/base32"
 	"errors"
+	"fmt"
 	"strings"
 	"time"
-	"fmt"
 
-	"marketplace/entity"
-	"marketplace/repository"
+	"ecommerce/entity"
+	"ecommerce/repository"
+
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"github.com/google/uuid"
 )
 
 type AuthService interface {
@@ -33,24 +34,22 @@ func NewAuthService(repo repository.UserRepository) AuthService {
 }
 
 func (s *authService) Register(ctx context.Context, username, email, password, role string) error {
-	// cek sudah ada belum
 	_, err := s.repo.FindByEmail(ctx, email)
 	switch {
 	case err == nil:
 		return errors.New("email already registered")
 	case !errors.Is(err, gorm.ErrRecordNotFound):
-    return err
-}
+		return errors.New("failed to register user: " + err.Error())
+	}
 
-// cek username udah kepake belum
 	_, err = s.repo.FindByUsername(ctx, username)
 	if err == nil {
 		return errors.New("username already taken")
 	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
-		return err
+		return errors.New("failed to register user: " + err.Error())
 	}
 
-	// hash password
+	// HASHING W BCRYPT
 	pwHash, _ := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 
 	// generate OTP plaintext & hash
@@ -58,7 +57,7 @@ func (s *authService) Register(ctx context.Context, username, email, password, r
 	otpHash, _ := bcrypt.GenerateFromPassword([]byte(otpPlain), bcrypt.DefaultCost)
 	exp := time.Now().Add(10 * time.Minute)
 
-	u := &entity.UsersAndAdmins{
+	u := &entity.Users{
 		ID:           uuid.New(),
 		Email:        email,
 		Username:     username,
@@ -71,55 +70,59 @@ func (s *authService) Register(ctx context.Context, username, email, password, r
 
 	fmt.Printf("DEBUG: Saving user -> Email: %s, Username: %s, Role: %s\n", u.Email, u.Username, u.Role)
 	if err := s.repo.Create(ctx, u); err != nil {
-		return err
+		return errors.New("failed to create user: " + err.Error())
 	}
 
-	// kirim email OTP
-	return SendEmailOTP(email, otpPlain)
+	if err := SendEmailOTP(email, username, otpPlain); err != nil {
+		return errors.New("failed to send OTP email: " + err.Error())
+	}
+	return nil
 }
 
 func (s *authService) VerifyOTP(ctx context.Context, email, otp string) error {
 	u, err := s.repo.FindByEmail(ctx, email)
 	if err != nil {
-		return errors.New("user not found")
+		return errors.New("failed to verify OTP: user not found")
 	}
 	if u.OTPExpiresAt == nil || time.Now().After(*u.OTPExpiresAt) {
-		return errors.New("otp expired")
+		return errors.New("failed to verify OTP: otp expired")
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(u.OTPHash), []byte(otp)); err != nil {
-		return errors.New("invalid otp")
+		return errors.New("failed to verify OTP: invalid otp")
 	}
 	u.IsActive = true
 	u.OTPHash = ""
 	u.OTPExpiresAt = nil
-	return s.repo.Update(ctx, u)
+	if err := s.repo.Update(ctx, u); err != nil {
+		return errors.New("failed to verify OTP: " + err.Error())
+	}
+	return nil
 }
 
 func (s *authService) Login(ctx context.Context, email, password string) (string, string, error) {
 	u, err := s.repo.FindByEmail(ctx, email)
 	if err != nil {
-		return "", "", errors.New("invalid credentials")
+		return "", "", errors.New("failed to login: invalid credentials")
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(password)); err != nil {
-		return "", "", errors.New("invalid credentials")
+		return "", "", errors.New("failed to login: invalid credentials")
 	}
 	if !u.IsActive {
-		return "", "", errors.New("account not active, verify otp")
+		return "", "", errors.New("failed to login: account not active, verify otp")
 	}
 	access, _, err := GenerateAccessToken(u.ID.String(), u.Email, string(u.Role))
 	if err != nil {
-		return "", "", err
+		return "", "", errors.New("failed to generate access token: " + err.Error())
 	}
 	refresh, rexp, err := GenerateRefreshToken(u.ID.String(), u.Email, string(u.Role))
 	if err != nil {
-		return "", "", err
+		return "", "", errors.New("failed to generate refresh token: " + err.Error())
 	}
-	// simpan refresh hash
 	rh, _ := bcrypt.GenerateFromPassword([]byte(refresh), bcrypt.DefaultCost)
 	u.RefreshTokenHash = string(rh)
 	u.RefreshExpiresAt = &rexp
 	if err := s.repo.Update(ctx, u); err != nil {
-		return "", "", err
+		return "", "", errors.New("failed to save refresh token: " + err.Error())
 	}
 	return access, refresh, nil
 }
@@ -127,34 +130,33 @@ func (s *authService) Login(ctx context.Context, email, password string) (string
 func (s *authService) Refresh(ctx context.Context, refreshToken string) (string, string, error) {
 	claims, email, _, err := parseRefresh(refreshToken)
 	if err != nil {
-		return "", "", errors.New("invalid refresh token")
+		return "", "", errors.New("failed to refresh token: invalid refresh token")
 	}
 
 	u, err := s.repo.FindByEmail(ctx, email)
 	if err != nil {
-		return "", "", errors.New("invalid refresh token")
+		return "", "", errors.New("failed to refresh token: invalid refresh token")
 	}
 	if u.RefreshExpiresAt == nil || time.Now().After(*u.RefreshExpiresAt) {
-		return "", "", errors.New("refresh expired")
+		return "", "", errors.New("failed to refresh token: refresh expired")
 	}
 	if err := bcrypt.CompareHashAndPassword([]byte(u.RefreshTokenHash), []byte(refreshToken)); err != nil {
-		return "", "", errors.New("invalid refresh token")
+		return "", "", errors.New("failed to refresh token: invalid refresh token")
 	}
 
-	// generate token baru
 	access, _, err := GenerateAccessToken(claims.UserID, u.Email, string(u.Role))
 	if err != nil {
-		return "", "", err
+		return "", "", errors.New("failed to refresh token: " + err.Error())
 	}
 	newRefresh, rexp, err := GenerateRefreshToken(claims.UserID, u.Email, string(u.Role))
 	if err != nil {
-		return "", "", err
+		return "", "", errors.New("failed to refresh token: " + err.Error())
 	}
 	rh, _ := bcrypt.GenerateFromPassword([]byte(newRefresh), bcrypt.DefaultCost)
 	u.RefreshTokenHash = string(rh)
 	u.RefreshExpiresAt = &rexp
 	if err := s.repo.Update(ctx, u); err != nil {
-		return "", "", err
+		return "", "", errors.New("failed to save new refresh token: " + err.Error())
 	}
 	return access, newRefresh, nil
 }
@@ -163,10 +165,10 @@ func (s *authService) Refresh(ctx context.Context, refreshToken string) (string,
 var accessBlacklist = make(map[string]time.Time)
 
 func (s *authService) Logout(ctx context.Context, accessToken string) error {
-	// blacklist sampai expiry claimnya
+	// blacklist until expiry claim
 	claims, err := parseAccess(accessToken)
 	if err != nil {
-		return errors.New("invalid token")
+		return errors.New("failed to logout: invalid token")
 	}
 	exp := claims.ExpiresAt.Time
 	accessBlacklist[accessToken] = exp
@@ -174,13 +176,11 @@ func (s *authService) Logout(ctx context.Context, accessToken string) error {
 }
 
 func generateNumericOTP(n int) string {
-	// pakai base32 untuk randomness, terus ambil digit
 	b := make([]byte, n)
 	if _, err := rand.Read(b); err != nil {
 		return "000000"
 	}
 	code := strings.ToUpper(base32.StdEncoding.EncodeToString(b))
-	// ambil digit aja
 	digs := make([]rune, 0, n)
 	for _, c := range code {
 		if c >= '0' && c <= '9' {
@@ -190,7 +190,6 @@ func generateNumericOTP(n int) string {
 			}
 		}
 	}
-	// fallback kalau kurang digit
 	for len(digs) < n {
 		digs = append(digs, '0')
 	}

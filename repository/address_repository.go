@@ -3,9 +3,10 @@ package repository
 import (
 	"context"
 
-	"marketplace/entity"
-	"gorm.io/gorm"
+	"ecommerce/entity"
+
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 type AddressRepository interface {
@@ -58,7 +59,11 @@ func (r *addressRepo) GetByUserID(ctx context.Context, userID uuid.UUID) (*entit
 
 func (r *addressRepo) GetByIDIncludeDeleted(ctx context.Context, id string) (*entity.Address, error) {
 	var a entity.Address
-	if err := r.db.WithContext(ctx).Unscoped().Where("id = ?", id).First(&a).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Unscoped().
+		Where("id = ?", id).
+		First(&a).
+		Error; err != nil {
 		return nil, err
 	}
 	return &a, nil
