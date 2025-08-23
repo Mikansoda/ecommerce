@@ -26,7 +26,7 @@ var C AppConfig
 
 func Init() {
 	C = AppConfig{
-		AppPort: getenv("APP_PORT", "8080"),
+		AppPort: getenv("APP_PORT", "8007"),
 		DBDSN: getenv("DB_DSN", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true&loc=Local",
 			os.Getenv("DB_USER"),
 			os.Getenv("DB_PASSWORD"),

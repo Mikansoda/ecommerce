@@ -38,14 +38,16 @@ The database is designed with multiple entities:
 
 1. Clone the repository
 2. Create a database, sql script provided in this repository
-3. Create an `.env` (not included in this repository) file which includes:
+3. Create an `.env` (example included in this repository) file which includes:
 ```
-APP_PORT=8080
-DB_HOST=localhost
+APP_PORT=8007
+
+DB_HOST=db
 DB_PORT=3306
-DB_USER=root
+DB_USER=student7
 DB_PASSWORD=your_db_password
 DB_NAME=ecommerce
+
 JWT_ACCESS_SECRET=your_jwt_access_secret
 JWT_REFRESH_SECRET=your_jwt_refresh_secret
 ACCESS_TTL_MIN=15
