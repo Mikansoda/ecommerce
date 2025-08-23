@@ -35,51 +35,34 @@ The database is designed with multiple entities:
     Logs actions performed by users or admins, including actor type, actor ID, action, and the entity affected (users, addresses, orders, payments, products, etc.).
 
 # Installation and Setup
+
 1. Clone the repository
 2. Create a database, sql script provided in this repository
-3. Create an .env (not included in this repository) file which includes:
-
+3. Create an `.env` (not included in this repository) file which includes:
+```
 APP_PORT=8080
-
-
 DB_HOST=localhost
-
 DB_PORT=3306
-
 DB_USER=root
-
 DB_PASSWORD=your_db_password
-
 DB_NAME=ecommerce
-
-
 JWT_ACCESS_SECRET=your_jwt_access_secret
-
 JWT_REFRESH_SECRET=your_jwt_refresh_secret
-
 ACCESS_TTL_MIN=15
-
 REFRESH_TTL_DAYS=7
 
-
 SMTP_HOST=smtp.example.com
-
 SMTP_PORT=587
-
 SMTP_USER=your_email@example.com
-
 SMTP_PASS=your_email_password
-
 FROM_EMAIL=your_email@example.com
-
 APP_ENV=dev
 
-
 CLOUDINARY_URL=your_cloudinary_url
-
 XENDIT_API_KEY=your_xendit_api_key
+```
 
-3. Run the server using go run main.go on the terminal
+4. Run the server using `go run main.go` on the terminal
 
 # Documentation
 ## Endpoints
