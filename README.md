@@ -62,59 +62,66 @@ CLOUDINARY_URL=your_cloudinary_url
 XENDIT_API_KEY=your_xendit_api_key
 3. Run the server using go run main.go on the terminal
 
-# Documentation:
-endpoints:
-1. Authentication
-   POST /auth/register – Register a new user
-   POST /auth/login – Login user and receive JWT tokens
-   POST /auth/verify-otp – Verify OTP for account activation
-   POST /auth/refresh – Refresh JWT tokens
-   POST /auth/logout – Logout user
-   GET /auth/profile – Get current user profile (user or admin)
-   GET /auth/admin/dashboard – Admin-only dashboard
-2. Users & Addresses
-   POST /user/addresses – Create a new address (user only)
-   GET /user/addresses – Get user's addresses
-   PATCH /user/addresses – Update an address
-   DELETE /user/addresses/:id – Delete an address
-   GET /admin/addresses – Get all addresses (admin only)
-   POST /admin/addresses/:id/recover – Recover a deleted address
-3. Products & Categories
-   GET /products – List all products (public)
-   GET /products/:productId – Get product details (public)
-   POST /admin/products – Create product (admin only)
-   PATCH /admin/products/:productId – Update product (admin only)
-   DELETE /admin/products/:productId – Delete product (admin only)
-   POST /admin/products/:productId/recover – Recover product (admin only)
-   POST /admin/products/:productId/images – Upload product image (admin only)
-   DELETE /images/:imageId – Delete product image (admin only)
-   POST /images/:imageId/recover – Recover deleted image (admin only)
-   GET /categories – List all categories (public)
-   POST /admin/categories – Create category (admin only)
-   PATCH /admin/categories/:id – Update category (admin only)
-   DELETE /admin/categories/:id – Delete category (admin only)
-   POST /admin/categories/:id/recover – Recover category (admin only)
-4. Cart
-   GET /user/cart – Get current user's cart
-   POST /user/cart/items – Add item to cart (user only, rate-limited)
-   DELETE /user/cart/items/:id – Remove item from cart (user only, rate-limited)
-5. Orders
-   POST /user/orders – Create order from cart (user only, rate-limited)
-   GET /user/orders – Get user's orders (user only, rate-limited)
-   GET /admin/orders – Get all orders (admin only)
-   PUT /admin/orders/:id/status – Update order status (admin only)
-6. Payments
-   POST /user/payments/xendit – Create payment via Xendit (user only, rate-limited)
-   GET /user/payments – Get user's payments (user only, rate-limited)
-   GET /admin/payments – Get all payments (admin only)
-   POST /admin/payments/webhook/xendit – Xendit payment webhook (admin only)
-7. Action Logs & Reports
-   GET /admin/logs – Get all action logs (admin only)
-   GET /admin/logs/:id – Get specific action log (admin only)
-   GET /admin/reports/selling – Sales report (admin only)
-   GET /admin/reports/stock – Stock report (admin only)
-Note:
-Routes are protected by JWT authentication (user or admin) and logger midddleware to create loggings.
+# Documentation
+## Endpoints
+### 1. Authentication
+- `POST /auth/register` – Register a new user
+- `POST /auth/login` – Login user and receive JWT tokens
+- `POST /auth/verify-otp` – Verify OTP for account activation
+- `POST /auth/refresh` – Refresh JWT tokens
+- `POST /auth/logout` – Logout user
+- `GET /auth/profile` – Get current user profile (user or admin)
+- `GET /auth/admin/dashboard` – Admin-only dashboard
+
+### 2. Users & Addresses
+- `POST /user/addresses` – Create a new address (user only)
+- `GET /user/addresses` – Get user's addresses
+- `PATCH /user/addresses` – Update an address
+- `DELETE /user/addresses/:id` – Delete an address
+- `GET /admin/addresses` – Get all addresses (admin only)
+- `POST /admin/addresses/:id/recover` – Recover a deleted address
+
+### 3. Products & Categories
+- `GET /products` – List all products (public)
+- `GET /products/:productId` – Get product details (public)
+- `POST /admin/products` – Create product (admin only)
+- `PATCH /admin/products/:productId` – Update product (admin only)
+- `DELETE /admin/products/:productId` – Delete product (admin only)
+- `POST /admin/products/:productId/recover` – Recover product (admin only)
+- `POST /admin/products/:productId/images` – Upload product image (admin only)
+- `DELETE /images/:imageId` – Delete product image (admin only)
+- `POST /images/:imageId/recover` – Recover deleted image (admin only)
+- `GET /categories` – List all categories (public)
+- `POST /admin/categories` – Create category (admin only)
+- `PATCH /admin/categories/:id` – Update category (admin only)
+- `DELETE /admin/categories/:id` – Delete category (admin only)
+- `POST /admin/categories/:id/recover` – Recover category (admin only)
+
+### 4. Cart
+- `GET /user/cart` – Get current user's cart
+- `POST /user/cart/items` – Add item to cart (user only, rate-limited)
+- `DELETE /user/cart/items/:id` – Remove item from cart (user only, rate-limited)
+
+### 5. Orders
+- `POST /user/orders` – Create order from cart (user only, rate-limited)
+- `GET /user/orders` – Get user's orders (user only, rate-limited)
+- `GET /admin/orders` – Get all orders (admin only)
+- `PUT /admin/orders/:id/status` – Update order status (admin only)
+
+### 6. Payments
+- `POST /user/payments/xendit` – Create payment via Xendit (user only, rate-limited)
+- `GET /user/payments` – Get user's payments (user only, rate-limited)
+- `GET /admin/payments` – Get all payments (admin only)
+- `POST /admin/payments/webhook/xendit` – Xendit payment webhook (admin only)
+
+### 7. Action Logs & Reports
+- `GET /admin/logs` – Get all action logs (admin only)
+- `GET /admin/logs/:id` – Get specific action log (admin only)
+- `GET /admin/reports/selling` – Sales report (admin only)
+- `GET /admin/reports/stock` – Stock report (admin only)
+
+**Note:**  
+Routes are protected by JWT authentication (user or admin) and logger middleware to create loggings.  
 Some routes have rate limits to prevent abuse (e.g., cart actions, orders, payments).
 
 # Deployment:
