@@ -133,5 +133,4 @@ Some routes have rate limits to prevent abuse (e.g., cart actions, orders, payme
 - Environment Variables: .env file on VPS provides all necessary configs (DB, JWT, SMTP, Xendit, Cloudinary, etc.).
 
 **Author:**
-Developed by Zahra<br>
-Final Project for Dibimbing Bootcamp - Golang Back-End development
+Developed by Zahra, Final Project for Dibimbing Bootcamp - Golang Back-End development
