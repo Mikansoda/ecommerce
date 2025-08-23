@@ -37,7 +37,7 @@ The database is designed with multiple entities:
 # Installation and Setup
 1. Clone the repository
 2. Create a database, sql script provided in this repository
-3. Create an .env (not included in this repository) file which includes:
+3. Create an .env (not included in this repository) file which includes:<br>
 APP_PORT=8080
 
 DB_HOST=localhost
@@ -132,6 +132,6 @@ Some routes have rate limits to prevent abuse (e.g., cart actions, orders, payme
 - Port Mapping: The container exposes the application on the VPS, e.g., 8007:8000.
 - Environment Variables: .env file on VPS provides all necessary configs (DB, JWT, SMTP, Xendit, Cloudinary, etc.).
 
-**Author:**
+**Author:**<br>
 Developed by Zahra<br>
 Final Project for Dibimbing Bootcamp - Golang Back-End development
