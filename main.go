@@ -82,16 +82,16 @@ func main() {
 	db := config.ConnectDatabase()
 
 	// Seed admin dari existing user
-	adminUsername := os.Getenv("ADMIN_USERNAME")
-	var user entity.Users
-	if err := db.Where("username = ?", adminUsername).First(&user).Error; err != nil {
+	adminEmail := os.Getenv("ADMIN_EMAIL")
+    var user entity.Users
+	if err := db.Where("email = ?", adminEmail).First(&user).Error; err != nil {
     log.Println("User not found:", err)
 	} else {
-    user.Role = "admin"  // set role jadi admin
+    user.Role = "admin"
     if err := db.Save(&user).Error; err != nil {
         log.Println("Failed to update user role:", err)
     } else {
-        log.Println("User", user.Username, "updated to admin successfully")
+        log.Println("User", user.Email, "updated to admin successfully")
     }
     }
 
