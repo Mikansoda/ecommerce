@@ -7,6 +7,8 @@ import (
 
 	"github.com/joho/godotenv"
 	"gorm.io/gorm"
+	"github.com/google/uuid"
+	"golang.org/x/crypto/bcrypt"
 
 	"ecommerce/config"
 	"ecommerce/entity"
@@ -14,6 +16,38 @@ import (
 	"ecommerce/routes"
 	"ecommerce/service"
 )
+
+func SeedAdmin(db *gorm.DB) {
+	email := os.Getenv("ADMIN_EMAIL")
+	username := os.Getenv("ADMIN_USERNAME")
+	password := os.Getenv("ADMIN_PASSWORD")
+
+	if email == "" || username == "" || password == "" {
+		log.Println("ADMIN_EMAIL, ADMIN_USERNAME, or ADMIN_PASSWORD not set. Skipping admin seed.")
+		return
+	}
+
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		log.Println("Failed to hash password:", err)
+		return
+	}
+
+	newAdmin := entity.Users{
+		ID:           uuid.New(),
+		Email:        email,
+		Username:     username,
+		PasswordHash: string(hashedPassword),
+		Role:         entity.RoleAdmin,
+		IsActive:     true,
+	}
+
+	if err := db.Create(&newAdmin).Error; err != nil {
+		log.Println("Failed to create admin user:", err)
+	} else {
+		log.Println("Admin user created successfully:", email)
+	}
+}
 
 func CreateTableIfNotExists(db *gorm.DB, model interface{}) error {
 	if !db.Migrator().HasTable(model) {
@@ -80,21 +114,7 @@ func main() {
 	config.Init()
 	// connect ke database, hasil connection object (*gorm.DB) namanya db
 	db := config.ConnectDatabase()
-
-	// Seed admin dari existing user
-	adminEmail := os.Getenv("ADMIN_EMAIL")
-    var user entity.Users
-	if err := db.Where("email = ?", adminEmail).First(&user).Error; err != nil {
-    log.Println("User not found:", err)
-	} else {
-    user.Role = "admin"
-    if err := db.Save(&user).Error; err != nil {
-        log.Println("Failed to update user role:", err)
-    } else {
-        log.Println("User", user.Email, "updated to admin successfully")
-    }
-    }
-
+    SeedAdmin(db)
     // Migrate db, inject connection sbg context db target
 	MigrateDatabase(db)
     
