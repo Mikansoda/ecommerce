@@ -37,7 +37,8 @@ The database is designed with multiple entities:
 # Installation and Setup
 1. Clone the repository
 2. Create a database, sql script provided in this repository
-3. Create an .env (not included in this repository) file which includes:<br>
+3. Create an .env (not included in this repository) file which includes:
+
 APP_PORT=8080
 
 DB_HOST=localhost
