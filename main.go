@@ -18,6 +18,7 @@ import (
 )
 
 func SeedAdmin(db *gorm.DB) {
+	log.Println("Running admin seeding...")
 	email := os.Getenv("ADMIN_EMAIL")
 	username := os.Getenv("ADMIN_USERNAME")
 	password := os.Getenv("ADMIN_PASSWORD")
@@ -114,7 +115,10 @@ func main() {
 	config.Init()
 	// connect ke database, hasil connection object (*gorm.DB) namanya db
 	db := config.ConnectDatabase()
-    SeedAdmin(db)
+    if err := CreateTableIfNotExists(db, &entity.Users{}); err != nil {
+	log.Fatal("Failed to create users table:", err)
+    }
+	SeedAdmin(db)
     // Migrate db, inject connection sbg context db target
 	MigrateDatabase(db)
     
