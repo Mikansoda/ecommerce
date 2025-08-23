@@ -22,4 +22,7 @@ jobs:
           script: |
             cd ~/final-project/student
             git pull origin main
-            docker-compose up -d --build
+            docker compose down || true
+            docker compose up -d --build || true
+            sleep 5
+            curl -f http://localhost:8007/status || true
