@@ -1,0 +1,1651 @@
+{
+	"info": {
+		"_postman_id": "d6ae3355-1a88-4db1-b04f-1c327203d596",
+		"name": "Ecommerce",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43351203"
+	},
+	"item": [
+		{
+			"name": "Authorization",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"username\": \"minkimink\",\n  \"password\": \"123457\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/auth/register",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify OTP",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"otp\": \"537000\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/auth/verify-otp",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"auth",
+								"verify-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123457\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/auth/login",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIwYmZmYmZiZi1mMDJiLTRkYzAtYTI1ZC0yN2YwMGM2YjdjNjMiLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6ImFkbWluIiwiZXhwIjoxNzU1MTAwNDU0LCJpYXQiOjE3NTUwOTk1NTR9.9Rbk8G7rYJZMRJIotnR5Ll_sYYfSxzfaACgdnnbENJ8",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123457\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/auth/logout",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiJmMDU3ZDk1Yy1kMzFmLTQzYTktODc5Zi1iYzU3OGMzMDU5ZjciLCJlbWFpbCI6ImFkbWluQGV4YW1wbGUuY29tIiwicm9sZSI6InVzZXIiLCJleHAiOjE3NTU5OTEwMDMsImlhdCI6MTc1NTk5MDEwM30.Di1G7d1Lwh1PCm92f4YAdHDbv5-5FeDuF-xkPt9ywSw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/auth/profile",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"auth",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Admin Dashboard",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/auth/admin/dashboard",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"auth",
+								"admin",
+								"dashboard"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Address",
+			"item": [
+				{
+					"name": "Create Address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"receiver_name\": \"Morin\",\n  \"phone_number\": \"08123457789\",\n  \"address_line\": \"Jl. Lily No. 123\",\n  \"city\": \"Jakarta\",\n  \"province\": \"DKI Jakarta\",\n  \"postal_code\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/addresses",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Address",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"receiver_name\": \"Morin\",\n  \"phone_number\": \"08123456789\",\n  \"address_line\": \"Jl. Lily No. 123\",\n  \"city\": \"Jakarta\",\n  \"province\": \"DKI Jakarta\",\n  \"postal_code\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/addresses",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Addresses Admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"receiver_name\": \"Morin\",\n  \"phone_number\": \"08123456789\",\n  \"address_line\": \"Jl. Lily No. 123\",\n  \"city\": \"Jakarta\",\n  \"province\": \"DKI Jakarta\",\n  \"postal_code\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/addresses?search=jakarta&limit=10&offset=0",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"addresses"
+							],
+							"query": [
+								{
+									"key": "search",
+									"value": "jakarta"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								},
+								{
+									"key": "offset",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"receiver_name\": \"Morin Rinki\",\n  \"city\": \"West Jakarta\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/addresses",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"addresses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/addresses/7c568ede-b230-41ba-a7d7-e3b5b45aa6f0",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"addresses",
+								"7c568ede-b230-41ba-a7d7-e3b5b45aa6f0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recover Address",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"receiver_name\": \"Morin Rinki\",\n  \"city\": \"West Jakarta\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/addresses/e491cd1b-0650-4c71-8a93-322eea46630d/recover",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"addresses",
+								"e491cd1b-0650-4c71-8a93-322eea46630d",
+								"recover"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "View All Products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/products",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Super Enzymes\",\n  \"description\": \"180 vegan tablets. Supports healthy digestion.\",\n  \"price\": 225000,\n  \"stock\": 7,\n  \"expiry_year\": 2026,\n  \"category_ids\": [3, 4]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/products",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recover Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/products/4/recover",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"products",
+								"4",
+								"recover"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Magnesium Glycinate\",\n  \"price\": 165000\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/products/4",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"products",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/products/4",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"products",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Products by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/products/1",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"products",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Category",
+			"item": [
+				{
+					"name": "View All Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/categories",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Non Consummables\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/categories",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recover Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/categories/5/recover",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"categories",
+								"5",
+								"recover"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Nuts and Snacks\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/categories/1",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"categories",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Categories",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/categories/5",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"categories",
+								"5"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product Images",
+			"item": [
+				{
+					"name": "Upload Product Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "image",
+									"type": "file",
+									"src": "/Users/zahraramadhanti/Desktop/Screenshot 2025-08-18 at 19.23.27.png"
+								},
+								{
+									"key": "is_primary",
+									"value": "true",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/products/1/images",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"products",
+								"1",
+								"images"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Recover Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/images/1/recover",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"images",
+								"1",
+								"recover"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product Image",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/images/1",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"images",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "View Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/cart",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"cart"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add to Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"product_id\": 2,\n  \"quantity\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/cart/items",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"cart",
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Items from Cart",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/cart/items/3f481960-32cb-4afc-896d-900b396c5a20",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"cart",
+								"items",
+								"3f481960-32cb-4afc-896d-900b396c5a20"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Order",
+			"item": [
+				{
+					"name": "Create Order",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"user_id\": \"760ecd66-1d82-48f0-8b1e-b8b0333d584d\",\n  \"address_id\": \"e491cd1b-0650-4c71-8a93-322eea46630d\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/orders",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Manage Order Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"shipped\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/orders/78e5abb7-66ce-4fe1-b325-c0f564ce8e15/status",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"orders",
+								"78e5abb7-66ce-4fe1-b325-c0f564ce8e15",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Order",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/orders",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Orders Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/orders",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "View Payments Admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/payments",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/payments",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"payments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace User}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"order_id\": \"615a76aa-a9e9-41e9-b554-9d6cf9142ed3\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/user/payments/xendit",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"user",
+								"payments",
+								"xendit"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "// Xendit_id\n{\n  \"id\": \"68a7f9350ab65146db0ca25d\",\n  \"status\": \"PAID\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/payments/webhook/xendit",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"payments",
+								"webhook",
+								"xendit"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Logs and Report",
+			"item": [
+				{
+					"name": "View Logs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/logs",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"logs"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Sales Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/reports/selling?type=best&limit=10",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"reports",
+								"selling"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "best"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View Stock Report",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@example.com\",\n  \"password\": \"123457\"\n}\n"
+						},
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/reports/stock?type=low&limit=5",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"reports",
+								"stock"
+							],
+							"query": [
+								{
+									"key": "type",
+									"value": "low"
+								},
+								{
+									"key": "limit",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "View logs by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{Marketplace Admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://202.10.47.76:8007/admin/logs/3eb11df0-b554-42a5-a4b5-b7d6b7761bfd",
+							"protocol": "http",
+							"host": [
+								"202",
+								"10",
+								"47",
+								"76"
+							],
+							"port": "8007",
+							"path": [
+								"admin",
+								"logs",
+								"3eb11df0-b554-42a5-a4b5-b7d6b7761bfd"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Check status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://202.10.47.76:8007/status",
+					"protocol": "http",
+					"host": [
+						"202",
+						"10",
+						"47",
+						"76"
+					],
+					"port": "8007",
+					"path": [
+						"status"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
