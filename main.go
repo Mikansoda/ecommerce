@@ -75,26 +75,51 @@ func MigrateDatabase(db *gorm.DB) {
 }
 
 func main() {
+	// load env
 	_ = godotenv.Load()
 	config.Init()
+	// connect ke database, hasil connection object (*gorm.DB) namanya db
 	db := config.ConnectDatabase()
 
+	// Seed admin dari existing user
+	adminUsername := os.Getenv("ADMIN_USERNAME")
+	var user entity.Users
+	if err := db.Where("username = ?", adminUsername).First(&user).Error; err != nil {
+    log.Println("User not found:", err)
+	} else {
+    user.Role = "admin"  // set role jadi admin
+    if err := db.Save(&user).Error; err != nil {
+        log.Println("Failed to update user role:", err)
+    } else {
+        log.Println("User", user.Username, "updated to admin successfully")
+    }
+    }
+
+    // Migrate db, inject connection sbg context db target
 	MigrateDatabase(db)
-
+    
+	// inject log repo dgn db target, query ke db
 	logRepo := repository.NewActionLogRepository(db)
+	// service logic bisnis, minta data ke logRepo yg query ke db
 	logSvc := service.NewActionLogService(logRepo)
-
+    
 	productRepo := repository.NewProductRepository(db)
 	orderRepo := repository.NewOrderRepo(db)
 	paymentRepo := repository.NewPaymentRepo(db)
 
 	productSvc := service.NewProductService(productRepo)
+
+	// paymentSvc inject banyak repo, order repo: buat update status order, product repo: related dgn stok produk
+	// logRepo: Business logging (non method) tdk bisa ditangkap middleware, mis user X melakukan pembayaran Order Y, status berubah jadi PAID.
 	paymentSvc := service.NewPaymentService(paymentRepo, orderRepo, productSvc, logSvc, db)
 
-	// Setup router
+	// Ambil Xendit API Key dari .env.
 	xenditAPIKey := os.Getenv("XENDIT_API_KEY")
+	// Panggil routes.SetupRouter → di dalamnya daftar endpoint
+	// Route diarahkan ke controller, controller panggil service, service panggil repository.
 	r := routes.SetupRouter(db, xenditAPIKey)
-
+    
+	// Background Job → Auto cancel pending payment
 	go func() {
 		ticker := time.NewTicker(1 * time.Hour) // check every 1 hour
 		for range ticker.C {
@@ -102,7 +127,7 @@ func main() {
 			paymentSvc.AutoCancelPendingPayments()
 		}
 	}()
-
+    // Start server (nyalain Gin HTTP)
 	log.Println("listening on :" + config.C.AppPort)
 	if err := r.Run(":" + config.C.AppPort); err != nil {
 		log.Fatal(err)
