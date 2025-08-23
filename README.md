@@ -132,7 +132,6 @@ Some routes have rate limits to prevent abuse (e.g., cart actions, orders, payme
 - Port Mapping: The container exposes the application on the VPS, e.g., 8007:8000.
 - Environment Variables: .env file on VPS provides all necessary configs (DB, JWT, SMTP, Xendit, Cloudinary, etc.).
 
-### Author:
-Developed by Zahra
-
+**Author:**
+Developed by Zahra<br>
 Final Project for Dibimbing Bootcamp - Golang Back-End development
