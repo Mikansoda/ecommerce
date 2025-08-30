@@ -21,7 +21,7 @@ func RegisterPaymentRoutes(r *gin.Engine, db *gorm.DB) {
 
 	productSvc := service.NewProductService(productRepo)
 	logSvc := service.NewActionLogService(logRepo)
-	paymentSvc := service.NewPaymentService(paymentRepo, orderRepo, productSvc, logSvc, db) // <-- tambahin db
+	paymentSvc := service.NewPaymentService(paymentRepo, orderRepo, productSvc, logSvc, db)
 	paymentCtl := controller.NewPaymentController(paymentSvc)
 
 	// User-protected routes
