@@ -30,10 +30,21 @@ func NewProductImageController(s service.ProductImageService) *ProductImageContr
 // @Param        is_primary  formData  bool    false  "Set as primary image"
 // @Success      201  {object}  map[string]interface{}
 // @Failure      400  {object}  map[string]interface{}
+// @Example 201 {json} Success Example:
+// {
+//   "message": "Image successfully uploaded",
+//   "detail": {
+//     "id": 1,
+//     "product_id": 3,
+//     "image_url": "https://example.com/images/organic_honey.jpg",
+//     "is_primary": true,
+//     "created_at": "2025-09-12T22:00:00Z"
+//   }
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid product ID",
-//   "detail": "strconv.ParseUint: parsing \"abc\": invalid syntax"
+//   "detail": "some parsing error"
 // }
 // @Failure      500  {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
@@ -97,10 +108,14 @@ func (ctl *ProductImageController) UploadImage(c *gin.Context) {
 // @Param        imageId  path      int  true  "Image ID"
 // @Success      200  {object}  map[string]interface{}
 // @Failure      400  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Image successfully deleted",
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid image ID",
-//   "detail": "strconv.ParseUint: parsing \"xyz\": invalid syntax"
+//   "detail": "some parsing error"
 // }
 // @Failure      404  {object}  map[string]interface{}
 // @Example 404 {json} Error Example:
@@ -155,6 +170,10 @@ func (ctl *ProductImageController) DeleteImage(c *gin.Context) {
 // @Param        imageId  path      int  true  "Image ID"
 // @Success      200  {object}  map[string]interface{}
 // @Failure      400  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Image successfully recovered",
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid image ID",

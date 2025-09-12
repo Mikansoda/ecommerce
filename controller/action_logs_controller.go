@@ -26,6 +26,18 @@ func NewActionLogController(s service.ActionLogService) *ActionLogController {
 // @Produce      json
 // @Success      200  {array}   entity.ActionLog
 // @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "ID": "",
+//     "ActorType": "user",
+//     "ActorID": "9gf1x4d7l-88ac-4626-a2c6-4affdf1244c9",
+//     "Action": "create",
+//     "EntityType": "addresses",
+//     "EntityID": "5zgwjdc12l-88ac-4626-a2c6-4affdf1244c9",
+//     "CreatedAt": "2025-08-31 10:09:45.677"
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch logs, try again later",
@@ -53,12 +65,22 @@ func (ctl *ActionLogController) GetLogs(c *gin.Context) {
 // @Param        id   path      string  true  "Log ID (UUID)"
 // @Success      200  {object}  entity.ActionLog
 // @Failure      400  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "ID": ""
+//   "ActorType": "user",
+//   "ActorID": "9gf1x4d7l-88ac-4626-a2c6-4affdf1244c9",  
+//   "Action": "create",
+//   "EntityType": "addresses",
+//   "EntityID": "5zgwjdc12l-88ac-4626-a2c6-4affdf1244c9",
+//   "CreatedAt": "2025-08-31 10:09:45.677",
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid log ID format",
 //   "detail": "some error message"
 // }
-// @Failure      404  {object}  map[string]interface{}
 // @Example 404 {json} Error Example:
 // {
 //   "message": "No log found",
@@ -95,6 +117,19 @@ func (ctl *ActionLogController) GetLogByID(c *gin.Context) {
 // @Param        limit  query     int     false  "Limit number of results"   default(5)
 // @Success      200    {array}   map[string]interface{}
 // @Failure      500    {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "product_id": "1",
+//     "product_name": "Roasted Almond",
+//     "total_sold": 120
+//   },
+//   {
+//     "product_id": "4",
+//     "product_name": "Chia Seed",
+//     "total_sold": 85
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch sales report, try again later",
@@ -131,6 +166,25 @@ func (ctl *ActionLogController) ReportSelling(c *gin.Context) {
 // @Param        limit  query     int     false  "Limit number of results" default(5)
 // @Success      200    {array}   entity.Product
 // @Failure      500    {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": "1",
+//     "name": "Roasted Almond",
+//     "stock": 50,
+//     "price": 150000,
+//     "createdAt": "2025-09-12T21:00:00Z",
+//     "categories": [...]
+//   },
+//   {
+//     "id": "2",
+//     "name": "Chia Seed",
+//     "stock": 10,
+//     "price": 350000,
+//     "createdAt": "2025-09-10T09:30:00Z",
+//     "categories": [...]
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch stock report, try again later",

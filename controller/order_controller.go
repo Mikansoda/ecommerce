@@ -31,6 +31,37 @@ func NewOrderController(s service.OrderService) *OrderController {
 // @Param        offset   query     int     false  "Offset for pagination"     default(0)
 // @Success      200      {array}   entity.Order
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": "123e4567-e89b-12d3-a456-426614174000",
+//     "user_id": "987e6543-e21b-12d3-a456-426614174999",
+//     "address_id": "555e1234-e21b-12d3-a456-426614174888",
+//     "status": "pending",
+//     "subtotal": 150000,
+//     "shipping_fee": 20000,
+//     "total_amount": 170000,
+//     "order_date": "2025-09-12T21:00:00Z",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:10:00Z",
+//     "expired_at": "2025-09-13T21:00:00Z",
+//     "order_items": [
+//       {
+//         "id": "321e6543-e89b-12d3-a456-426614174001",
+//         "order_id": "123e4567-e89b-12d3-a456-426614174000",
+//         "product_id": 1,
+//         "quantity": 2,
+//         "price": 75000,
+//         "product": {
+//           "id": 1,
+//           "name": "Roasted Almond",
+//           "stock": 50,
+//           "price": 75000
+//         }
+//       }
+//     ]
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch orders, try again later",
@@ -78,6 +109,37 @@ func (ctl *OrderController) GetOrders(c *gin.Context) {
 // @Failure      400  {object}  map[string]interface{}
 // @Failure      404  {object}  map[string]interface{}
 // @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": "123e4567-e89b-12d3-a456-426614174000",
+//     "user_id": "987e6543-e21b-12d3-a456-426614174999",
+//     "address_id": "555e1234-e21b-12d3-a456-426614174888",
+//     "status": "completed",
+//     "subtotal": 200000,
+//     "shipping_fee": 20000,
+//     "total_amount": 220000,
+//     "order_date": "2025-09-10T09:30:00Z",
+//     "created_at": "2025-09-10T09:30:00Z",
+//     "updated_at": "2025-09-11T10:00:00Z",
+//     "expired_at": null,
+//     "order_items": [
+//       {
+//         "id": "321e6543-e89b-12d3-a456-426614174002",
+//         "order_id": "123e4567-e89b-12d3-a456-426614174000",
+//         "product_id": 2,
+//         "quantity": 1,
+//         "price": 200000,
+//         "product": {
+//           "id": 2,
+//           "name": "Cashew Nut",
+//           "stock": 30,
+//           "price": 200000
+//         }
+//       }
+//     ]
+//   }
+// ]
 // @Example 400 {json} Error Example:
 // {
 //   "message": "invalid user ID",
@@ -131,6 +193,31 @@ func (ctl *OrderController) GetUserOrders(c *gin.Context) {
 // @Success      200      {object}  map[string]interface{}
 // @Failure      400      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "order": {
+//     "id": "456e7890-e89b-12d3-a456-426614174010",
+//     "user_id": "987e6543-e21b-12d3-a456-426614174999",
+//     "address_id": "555e1234-e21b-12d3-a456-426614174888",
+//     "status": "pending",
+//     "subtotal": 150000,
+//     "shipping_fee": 20000,
+//     "total_amount": 170000,
+//     "order_date": "2025-09-12T21:00:00Z",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:10:00Z",
+//     "expired_at": "2025-09-13T21:00:00Z",
+//     "order_items": [
+//       {
+//         "id": "654e3210-e89b-12d3-a456-426614174011",
+//         "order_id": "456e7890-e89b-12d3-a456-426614174010",
+//         "product_id": 1,
+//         "quantity": 2,
+//         "price": 75000
+//       }
+//     ]
+//   }
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "invalid request",

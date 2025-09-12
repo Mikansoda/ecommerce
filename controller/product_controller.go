@@ -49,6 +49,39 @@ type updateProductReq struct {
 // @Param        offset   query     int     false  "Offset for pagination"     default(0)
 // @Success      200      {array}   entity.Product
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": 1,
+//     "name": "Roasted Almond",
+//     "description": "Crunchy and delicious roasted almonds",
+//     "price": 150000,
+//     "stock": 50,
+//     "expiry_year": 2026,
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:00:00Z",
+//     "images": [
+//       {"id": 1, "product_id": 1, "image_url": "https://example.com/img1.jpg", "is_primary": true, "created_at": "2025-09-12T21:00:00Z"}
+//     ],
+//     "categories": [
+//       {"id": 1, "name": "Nuts", "created_at": "2025-09-10T10:00:00Z", "updated_at": "2025-09-10T10:00:00Z"}
+//     ]
+//   },
+//   {
+//     "id": 2,
+//     "name": "Chia Seed",
+//     "description": "Healthy chia seeds for smoothies",
+//     "price": 350000,
+//     "stock": 10,
+//     "expiry_year": 2025,
+//     "created_at": "2025-09-10T09:30:00Z",
+//     "updated_at": "2025-09-10T09:30:00Z",
+//     "images": [],
+//     "categories": [
+//       {"id": 2, "name": "Seeds", "created_at": "2025-09-08T08:00:00Z", "updated_at": "2025-09-08T08:00:00Z"}
+//     ]
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch products, try again later",
@@ -87,6 +120,33 @@ func (ctl *ProductController) GetProducts(c *gin.Context) {
 // @Success      200         {object}  entity.Product
 // @Failure      400         {object}  map[string]interface{}
 // @Failure      404         {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "id": 1,
+//   "name": "Roasted Almond",
+//   "description": "Crunchy and delicious roasted almonds",
+//   "price": 150000,
+//   "stock": 50,
+//   "expiry_year": 2026,
+//   "created_at": "2025-09-12T21:00:00Z",
+//   "updated_at": "2025-09-12T21:00:00Z",
+//   "images": [
+//     {"id": 1, "product_id": 1, "image_url": "https://example.com/img1.jpg", "is_primary": true, "created_at": "2025-09-12T21:00:00Z"}
+//   ],
+//   "categories": [
+//     {"id": 1, "name": "Nuts", "created_at": "2025-09-10T10:00:00Z", "updated_at": "2025-09-10T10:00:00Z"}
+//   ]
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid product ID",
+//   "detail": "some error message"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Product not found",
+//   "detail": "some error message"
+// }
 // @Router       /products/{productId} [get]
 func (ctl *ProductController) GetProductByID(c *gin.Context) {
 	idStr := c.Param("productId")
@@ -122,6 +182,34 @@ func (ctl *ProductController) GetProductByID(c *gin.Context) {
 // @Success      200       {object}  map[string]interface{}
 // @Failure      400       {object}  map[string]interface{}
 // @Failure      500       {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Product successfully created",
+//   "data": {
+//     "id": 3,
+//     "name": "Organic Honey",
+//     "description": "Pure organic honey from local farms",
+//     "price": 250000,
+//     "stock": 20,
+//     "expiry_year": 2027,
+//     "created_at": "2025-09-12T21:15:00Z",
+//     "updated_at": "2025-09-12T21:15:00Z",
+//     "images": [],
+//     "categories": [
+//       {"id": 3, "name": "Sweeteners", "created_at": "2025-09-11T12:00:00Z", "updated_at": "2025-09-11T12:00:00Z"}
+//     ]
+//   }
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid input data",
+//   "detail": "some error message"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to create product, try again later",
+//   "detail": "some error message"
+// }
 // @Router       /admin/products [post]
 func (ctl *ProductController) CreateProduct(c *gin.Context) {
 	var req createProductReq
@@ -172,6 +260,39 @@ func (ctl *ProductController) CreateProduct(c *gin.Context) {
 // @Failure      400         {object}  map[string]interface{}
 // @Failure      404         {object}  map[string]interface{}
 // @Failure      500         {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Product successfully updated",
+//   "data": {
+//     "id": 3,
+//     "name": "Organic Honey Premium",
+//     "description": "Premium organic honey from local farms",
+//     "price": 300000,
+//     "stock": 15,
+//     "expiry_year": 2027,
+//     "created_at": "2025-09-12T21:15:00Z",
+//     "updated_at": "2025-09-12T21:45:00Z",
+//     "images": [],
+//     "categories": [
+//       {"id": 3, "name": "Sweeteners", "created_at": "2025-09-11T12:00:00Z", "updated_at": "2025-09-11T12:00:00Z"}
+//     ]
+//   }
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid product ID",
+//   "detail": "some error message"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Product not found",
+//   "detail": "some error message"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to update product, try again later",
+//   "detail": "some error message"
+// }
 // @Router       /admin/products/{productId} [patch]
 func (ctl *ProductController) UpdateProduct(c *gin.Context) {
 	idStr := c.Param("productId")
@@ -252,6 +373,25 @@ func (ctl *ProductController) UpdateProduct(c *gin.Context) {
 // @Failure      400         {object}  map[string]interface{}
 // @Failure      404         {object}  map[string]interface{}
 // @Failure      500         {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Product successfully deleted"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid product ID",
+//   "detail": "some error message"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Product not found",
+//   "detail": "some error message"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to delete product, try again later",
+//   "detail": "some error message"
+// }
 // @Router       /admin/products/{productId} [delete]
 func (ctl *ProductController) DeleteProduct(c *gin.Context) {
 	idStr := c.Param("productId")
@@ -296,6 +436,25 @@ func (ctl *ProductController) DeleteProduct(c *gin.Context) {
 // @Failure      400         {object}  map[string]interface{}
 // @Failure      404         {object}  map[string]interface{}
 // @Failure      500         {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Product successfully recovered"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid product ID",
+//   "detail": "some error message"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Product not found",
+//   "detail": "some error message"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to recover product, try again later",
+//   "detail": "some error message"
+// }
 // @Router       /admin/products/{productId}/recover [post]
 func (ctl *ProductController) RecoverProduct(c *gin.Context) {
 	idStr := c.Param("productId")

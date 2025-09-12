@@ -50,6 +50,31 @@ type updateAddressReq struct {
 // @Param        offset   query     int     false  "Offset for pagination"     default(0)
 // @Success      200      {array}   entity.Address
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//     "receiver_name": "John Doe",
+//     "phone_number": "08123456789",
+//     "address_line": "Jl. Kebon Jeruk No. 12",
+//     "city": "Jakarta",
+//     "province": "DKI Jakarta",
+//     "postal_code": "11530",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:00:00Z"
+//   },
+//   {
+//     "id": "2b3c4d5e-6789-01bc-def0-2345678901bc",
+//     "receiver_name": "Jane Smith",
+//     "phone_number": "08234567890",
+//     "address_line": "Jl. Sudirman No. 45",
+//     "city": "Bandung",
+//     "province": "Jawa Barat",
+//     "postal_code": "40123",
+//     "created_at": "2025-09-10T09:30:00Z",
+//     "updated_at": "2025-09-10T09:30:00Z"
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch addresses, try again later",
@@ -86,17 +111,29 @@ func (ctl *AddressController) GetAddresses(c *gin.Context) {
 // @Produce      json
 // @Success      200  {object}  entity.Address
 // @Failure      400  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//   "receiver_name": "John Doe",
+//   "phone_number": "08123456789",
+//   "address_line": "Jl. Kebon Jeruk No. 12",
+//   "city": "Jakarta",
+//   "province": "DKI Jakarta",
+//   "postal_code": "11530",
+//   "created_at": "2025-09-12T21:00:00Z",
+//   "updated_at": "2025-09-12T21:00:00Z"
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid user ID",
 //   "detail": "some error message"
 // }
-// @Failure      404  {object}  map[string]interface{}
 // @Example 404 {json} Error Example:
 // {
 //   "message": "No address found"
 // }
-// @Failure      500  {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch your address, try again later",
@@ -140,12 +177,27 @@ func (ctl *AddressController) GetUserAddress(c *gin.Context) {
 // @Param        request  body      createAddressReq  true  "Address request body"
 // @Success      200      {object}  map[string]interface{}
 // @Failure      400      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Address successfully created",
+//   "data": {
+//     "id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//     "receiver_name": "John Doe",
+//     "phone_number": "08123456789",
+//     "address_line": "Jl. Kebon Jeruk No. 12",
+//     "city": "Jakarta",
+//     "province": "DKI Jakarta",
+//     "postal_code": "11530",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:00:00Z"
+//   }
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "You already have an address",
 //   "detail": "user already has an address"
 // }
-// @Failure      500      {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to create address, try again later",
@@ -202,17 +254,32 @@ func (ctl *AddressController) CreateAddress(c *gin.Context) {
 // @Param        request  body      updateAddressReq  true  "Address update request body"
 // @Success      200      {object}  map[string]interface{}
 // @Failure      400      {object}  map[string]interface{}
+// @Failure      404      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Address successfully updated",
+//   "data": {
+//     "id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//     "receiver_name": "John Doe",
+//     "phone_number": "08123456789",
+//     "address_line": "Jl. Kebon Jeruk No. 12",
+//     "city": "Jakarta",
+//     "province": "DKI Jakarta",
+//     "postal_code": "11530",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:10:00Z"
+//   }
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid input data",
 //   "detail": "some error message"
 // }
-// @Failure      404      {object}  map[string]interface{}
 // @Example 404 {json} Error Example:
 // {
 //   "message": "Address not found"
 // }
-// @Failure      500      {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to update address, try again later",
@@ -281,17 +348,21 @@ func (ctl *AddressController) UpdateAddress(c *gin.Context) {
 // @Param        id   path      string  true  "Address ID (UUID)"
 // @Success      200  {object}  map[string]interface{}
 // @Failure      403  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Address successfully deleted"
+// }
 // @Example 403 {json} Error Example:
 // {
 //   "message": "You are not allowed to delete this address",
 //   "detail": "forbidden"
 // }
-// @Failure      404  {object}  map[string]interface{}
 // @Example 404 {json} Error Example:
 // {
 //   "message": "Address not found"
 // }
-// @Failure      500  {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to delete address, try again later",
@@ -332,11 +403,15 @@ func (ctl *AddressController) DeleteAddress(c *gin.Context) {
 // @Param        id   path      string  true  "Address ID (UUID)"
 // @Success      200  {object}  map[string]interface{}
 // @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Address successfully recovered"
+// }
 // @Example 404 {json} Error Example:
 // {
 //   "message": "Address not found"
 // }
-// @Failure      500  {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to recover address, try again later",

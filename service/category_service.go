@@ -65,7 +65,6 @@ func (s *categoryService) UpdateCategory(ctx context.Context, c *entity.ProductC
 
 	// Update fields
 	existing.Name = c.Name
-	existing.Description = c.Description
 	existing.UpdatedAt = time.Now()
 	if c.Products != nil {
 		existing.Products = c.Products

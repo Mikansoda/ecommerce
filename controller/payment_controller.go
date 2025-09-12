@@ -34,6 +34,18 @@ type createPaymentReq struct {
 // @Produce      json
 // @Success      200  {array}   entity.Payment
 // @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": "123e4567-e89b-12d3-a456-426614174000",
+//     "order_id": "987e6543-e21b-12d3-a456-426614174999",
+//     "xendit_invoice_id": "inv-12345",
+//     "payment_type": "xendit_invoice",
+//     "status": "pending",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:10:00Z",
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch payments, try again later",
@@ -60,6 +72,18 @@ func (ctl *PaymentController) GetPayments(c *gin.Context) {
 // @Produce      json
 // @Success      200  {array}   entity.Payment
 // @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": "456e7890-e89b-12d3-a456-426614174010",
+//     "order_id": "987e6543-e21b-12d3-a456-426614174999",
+//     "xendit_invoice_id": "inv-67890",
+//     "payment_type": "xendit_invoice",
+//     "status": "paid",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:30:00Z",
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch payments, try again later",

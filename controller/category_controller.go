@@ -37,6 +37,21 @@ type updateCategoryReq struct {
 // @Param        offset   query     int  false  "Offset for pagination"     default(0)
 // @Success      200      {array}   entity.ProductCategory
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// [
+//   {
+//     "id": 1,
+//     "name": "Nuts",
+//     "created_at": "2025-09-12T21:00:00Z",
+//     "updated_at": "2025-09-12T21:10:00Z",
+//   },
+//   {
+//     "id": 2,
+//     "name": "Seeds",
+//     "created_at": "2025-09-10T09:30:00Z",
+//     "updated_at": "2025-09-10T09:45:00Z",
+//   }
+// ]
 // @Example 500 {json} Error Example:
 // {
 //   "message": "Failed to fetch categories, try again later",
@@ -75,6 +90,16 @@ func (ctl *CategoryController) GetCategories(c *gin.Context) {
 // @Success      200      {object}  map[string]interface{}
 // @Failure      400      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Category successfully created",
+//   "data": {
+//     "id": 3,
+//     "name": "Dried Fruits",
+//     "created_at": "2025-09-12T22:00:00Z",
+//     "updated_at": "2025-09-12T22:00:00Z",
+//   }
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid input data",

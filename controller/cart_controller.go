@@ -32,6 +32,39 @@ type addCartItemReq struct {
 // @Success      200      {object}  entity.Cart
 // @Failure      400      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//   "user_id": "9b8c7d6e-5432-10fe-dcba-0987654321fe",
+//   "created_at": "2025-09-12T21:00:00Z",
+//   "updated_at": "2025-09-12T21:10:00Z",
+//   "items": [
+//     {
+//       "id": "2b3c4d5e-6789-01bc-def0-2345678901bc",
+//       "cart_id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//       "product_id": 1,
+//       "quantity": 2,
+//       "product": {
+//         "id": 1,
+//         "name": "Roasted Almond",
+//         "stock": 50,
+//         "price": 150000
+//       }
+//     },
+//     {
+//       "id": "3c4d5e6f-7890-12cd-ef01-3456789012cd",
+//       "cart_id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//       "product_id": 2,
+//       "quantity": 1,
+//       "product": {
+//         "id": 2,
+//         "name": "Chia Seed",
+//         "stock": 10,
+//         "price": 350000
+//       }
+//     }
+//   ]
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid user ID",
@@ -77,6 +110,19 @@ func (ctl *CartController) GetCart(c *gin.Context) {
 // @Failure      403      {object}  map[string]interface{}
 // @Failure      404      {object}  map[string]interface{}
 // @Failure      500      {object}  map[string]interface{}
+// @Example 201 {json} Success Example:
+// {
+//   "id": "2b3c4d5e-6789-01bc-def0-2345678901bc",
+//   "cart_id": "1a2b3c4d-5678-90ab-cdef-1234567890ab",
+//   "product_id": 1,
+//   "quantity": 2,
+//   "product": {
+//     "id": 1,
+//     "name": "Roasted Almond",
+//     "stock": 50,
+//     "price": 150000
+//   }
+// }
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid input data",
