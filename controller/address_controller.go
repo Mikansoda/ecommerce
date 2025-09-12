@@ -128,7 +128,7 @@ func (ctl *AddressController) GetAddresses(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid user ID",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {
@@ -274,7 +274,7 @@ func (ctl *AddressController) CreateAddress(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid input data",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {

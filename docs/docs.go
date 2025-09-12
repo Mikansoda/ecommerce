@@ -703,7 +703,7 @@ const docTemplate = `{
         },
         "/admin/payments/webhook/xendit": {
             "post": {
-                "description": "Handle Xendit payment status update (admin only)",
+                "description": "Handle Xendit payment status update (admin only). Allowed statuses: pending, paid, failed",
                 "consumes": [
                     "application/json"
                 ],
@@ -1261,6 +1261,13 @@ const docTemplate = `{
                 "responses": {
                     "200": {
                         "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true

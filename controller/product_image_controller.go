@@ -36,7 +36,7 @@ func NewProductImageController(s service.ProductImageService) *ProductImageContr
 //   "detail": {
 //     "id": 1,
 //     "product_id": 3,
-//     "image_url": "https://example.com/images/organic_honey.jpg",
+//     "image_url": "https://res.cloudinary.com/.../image.jpg",
 //     "is_primary": true,
 //     "created_at": "2025-09-12T22:00:00Z"
 //   }
@@ -44,7 +44,7 @@ func NewProductImageController(s service.ProductImageService) *ProductImageContr
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid product ID",
-//   "detail": "some parsing error"
+//   "detail": "parsing error detail"
 // }
 // @Failure      500  {object}  map[string]interface{}
 // @Example 500 {json} Error Example:
@@ -115,7 +115,7 @@ func (ctl *ProductImageController) UploadImage(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid image ID",
-//   "detail": "some parsing error"
+//   "detail": "parsing error detail"
 // }
 // @Failure      404  {object}  map[string]interface{}
 // @Example 404 {json} Error Example:
@@ -177,7 +177,7 @@ func (ctl *ProductImageController) DeleteImage(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid image ID",
-//   "detail": "strconv.ParseUint: parsing \"abc\": invalid syntax"
+//   "detail": "parsing error detail"
 // }
 // @Failure      404  {object}  map[string]interface{}
 // @Example 404 {json} Error Example:

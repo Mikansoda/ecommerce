@@ -194,7 +194,7 @@ func (ctl *CartController) AddItem(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid cart item id",
-//   "detail": "uuid parsing error detail"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {

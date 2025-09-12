@@ -79,7 +79,7 @@ func (ctl *ActionLogController) GetLogs(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid log ID format",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {

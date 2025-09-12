@@ -798,7 +798,8 @@ paths:
     post:
       consumes:
       - application/json
-      description: Handle Xendit payment status update (admin only)
+      description: 'Handle Xendit payment status update (admin only). Allowed statuses:
+        pending, paid, failed'
       parameters:
       - description: Webhook payload
         in: body
@@ -1163,6 +1164,11 @@ paths:
       responses:
         "200":
           description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
           schema:
             additionalProperties: true
             type: object

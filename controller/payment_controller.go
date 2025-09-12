@@ -126,7 +126,7 @@ func (ctl *PaymentController) GetUserPayments(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid order ID",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {
@@ -232,7 +232,7 @@ func (ctl *PaymentController) CreatePayment(c *gin.Context) {
 
 // XenditWebhook godoc
 // @Summary      Xendit webhook
-// @Description  Handle Xendit payment status update (admin only)
+// @Description  Handle Xendit payment status update (admin only). Allowed statuses: pending, paid, failed
 // @Tags         Payments
 // @Accept       json
 // @Produce      json

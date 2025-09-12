@@ -52,7 +52,8 @@ type refreshReq struct {
 // }
 // @Example 400 {json} Error Example:
 // {
-//   "message":"Failed to register, try again","detail":"error detail here"
+//   "message": "Invalid input data",
+//   "detail": "parsing error detail"
 // }
 // @Router       /auth/register [post]
 func (a *AuthController) Register(c *gin.Context) {
@@ -93,7 +94,8 @@ func (a *AuthController) Register(c *gin.Context) {
 // }
 // @Example 400 {json} Error Example:
 // {
-//   "message":"Failed to verify OTP","detail":"error detail here"
+//   "message": "Invalid input data",
+//   "detail": "parsing error detail"
 // }
 // @Router       /auth/verify-otp [post]
 func (a *AuthController) VerifyOTP(c *gin.Context) {
@@ -134,7 +136,8 @@ func (a *AuthController) VerifyOTP(c *gin.Context) {
 // }
 // @Example 401 {json} Error Example:
 // {
-//   "message":"Login failed","detail":"invalid credentials"
+//   "message":"Login failed",
+//   "detail":"invalid credentials"
 // }
 // @Router       /auth/login [post]
 func (a *AuthController) Login(c *gin.Context) {
@@ -170,14 +173,26 @@ func (a *AuthController) Login(c *gin.Context) {
 // @Produce      json
 // @Param        request  body      refreshReq  true  "Refresh token request"
 // @Success      200      {object}  map[string]interface{}
+// @Failure      400     {object}  map[string]interface{}
 // @Failure      401      {object}  map[string]interface{}
 // @Example 200 {json} Success Example:
 // {
 //   "access_token":"<new-access>","refresh_token":"<new-refresh>"
 // }
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Failed to refresh token",
+//   "detail": "refresh expired"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid input data",
+//   "detail": "parsing error detail"
+// }
 // @Example 401 {json} Error Example:
 // {
-//   "message":"Failed to refresh token","detail":"refresh expired"
+//   "message": "Failed to refresh token",
+//   "detail": "refresh expired"
 // }
 // @Router       /auth/refresh [post]
 func (a *AuthController) Refresh(c *gin.Context) {
@@ -219,7 +234,8 @@ func (a *AuthController) Refresh(c *gin.Context) {
 // }
 // @Example 400 {json} Error Example:
 // {
-//   "message":"Failed to logout","detail":"invalid token"
+//   "message": "Failed to logout",
+//   "detail": "some error message"
 // }
 // @Router       /auth/logout [post]
 func (a *AuthController) Logout(c *gin.Context) {

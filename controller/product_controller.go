@@ -61,7 +61,7 @@ type updateProductReq struct {
 //     "created_at": "2025-09-12T21:00:00Z",
 //     "updated_at": "2025-09-12T21:00:00Z",
 //     "images": [
-//       {"id": 1, "product_id": 1, "image_url": "https://example.com/img1.jpg", "is_primary": true, "created_at": "2025-09-12T21:00:00Z"}
+//       {"id": 1, "product_id": 1, "image_url": "https://res.cloudinary.com/.../image.jpg", "is_primary": true, "created_at": "2025-09-12T21:00:00Z"}
 //     ],
 //     "categories": [
 //       {"id": 1, "name": "Nuts", "created_at": "2025-09-10T10:00:00Z", "updated_at": "2025-09-10T10:00:00Z"}
@@ -131,7 +131,7 @@ func (ctl *ProductController) GetProducts(c *gin.Context) {
 //   "created_at": "2025-09-12T21:00:00Z",
 //   "updated_at": "2025-09-12T21:00:00Z",
 //   "images": [
-//     {"id": 1, "product_id": 1, "image_url": "https://example.com/img1.jpg", "is_primary": true, "created_at": "2025-09-12T21:00:00Z"}
+//     {"id": 1, "product_id": 1, "image_url": "https://res.cloudinary.com/.../image.jpg", "is_primary": true, "created_at": "2025-09-12T21:00:00Z"}
 //   ],
 //   "categories": [
 //     {"id": 1, "name": "Nuts", "created_at": "2025-09-10T10:00:00Z", "updated_at": "2025-09-10T10:00:00Z"}
@@ -140,7 +140,7 @@ func (ctl *ProductController) GetProducts(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid product ID",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {
@@ -203,7 +203,7 @@ func (ctl *ProductController) GetProductByID(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid input data",
-//   "detail": "some error message"
+//   "detail": "binding error detail"
 // }
 // @Example 500 {json} Error Example:
 // {
@@ -281,7 +281,7 @@ func (ctl *ProductController) CreateProduct(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid product ID",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {
@@ -380,7 +380,7 @@ func (ctl *ProductController) UpdateProduct(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid product ID",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {
@@ -443,7 +443,7 @@ func (ctl *ProductController) DeleteProduct(c *gin.Context) {
 // @Example 400 {json} Error Example:
 // {
 //   "message": "Invalid product ID",
-//   "detail": "some error message"
+//   "detail": "parsing error detail"
 // }
 // @Example 404 {json} Error Example:
 // {
