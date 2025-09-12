@@ -23,7 +23,8 @@ func RateLimit(limit int, window time.Duration) gin.HandlerFunc {
 
 		mu.Lock()
 		defer mu.Unlock()
-
+        // kalau user baru (!ok), inisialisasi count = 0.
+        // buat goroutine yang ngehapus data user setelah durasi window lewat, counter reset otomatis.
 		if _, ok := requests[userID]; !ok {
 			requests[userID] = 0
 			go func(uid string) {

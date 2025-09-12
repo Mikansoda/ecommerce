@@ -20,7 +20,23 @@ func NewOrderController(s service.OrderService) *OrderController {
 	return &OrderController{service: s}
 }
 
-// GET orders (admin only)
+// GetOrders godoc
+// @Summary      Get all orders
+// @Description  Return list of all orders (admin only)
+// @Tags         Orders
+// @Security     BearerAuth
+// @Produce      json
+// @Param        status   query     string  false  "Filter by order status (e.g. pending, completed)"
+// @Param        limit    query     int     false  "Limit number of results"   default(10)
+// @Param        offset   query     int     false  "Offset for pagination"     default(0)
+// @Success      200      {array}   entity.Order
+// @Failure      500      {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch orders, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/orders [get]
 func (ctl *OrderController) GetOrders(c *gin.Context) {
 	limitStr := c.Query("limit")
 	offsetStr := c.Query("offset")
@@ -52,7 +68,31 @@ func (ctl *OrderController) GetOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, orders)
 }
 
-// GET orders (self-requested by user)
+// GetUserOrders godoc
+// @Summary      Get user orders
+// @Description  Return list of orders belonging to the logged-in user
+// @Tags         Orders
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {array}   entity.Order
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "invalid user ID",
+//   "detail": "parsing error detail"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "No order found, let's start ordering"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch your orders, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/orders [get]
 func (ctl *OrderController) GetUserOrders(c *gin.Context) {
 	userIDStr := c.GetString("userID")
 	userID, err := uuid.Parse(userIDStr)
@@ -80,7 +120,28 @@ func (ctl *OrderController) GetUserOrders(c *gin.Context) {
 	c.JSON(http.StatusOK, orders)
 }
 
-// Create Order (self-created by user)
+// CreateOrder godoc
+// @Summary      Create a new order
+// @Description  Create an order from the user's cart
+// @Tags         Orders
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      object  true  "Create Order Request"  Example({"user_id": "uuid-string", "address_id": "uuid-string"})
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "invalid request",
+//   "detail": "binding error detail"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "failed to create order, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/orders [post]
 func (ctl *OrderController) CreateOrder(c *gin.Context) {
 	var req struct {
 		UserID    string `json:"user_id"`
@@ -120,7 +181,33 @@ func (ctl *OrderController) CreateOrder(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"order": order})
 }
 
-// Update order status (admin only)
+// UpdateOrderStatus godoc
+// @Summary      Update order status
+// @Description  Update the status of an existing order (admin only)
+// @Tags         Orders
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        id       path      string  true  "Order ID (UUID)"
+// @Param        request  body      object  true  "Update Order Status Request"  Example({"status": "completed"})
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "order 123e4567-e89b-12d3-a456-426614174000 status updated to completed"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "invalid order ID",
+//   "detail": "parsing error detail"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "failed to update order status, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/orders/{id}/status [put]
 func (ctl *OrderController) UpdateOrderStatus(c *gin.Context) {
 	orderIDStr := c.Param("id")
 	orderID, err := uuid.Parse(orderIDStr)

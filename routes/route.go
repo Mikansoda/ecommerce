@@ -5,10 +5,13 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 
 	"ecommerce/middleware"
 	"ecommerce/repository"
 	"ecommerce/service"
+	_ "ecommerce/docs"
 )
 
 func SetupRouter(db *gorm.DB, xenditAPIKey string) *gin.Engine {
@@ -33,6 +36,7 @@ func SetupRouter(db *gorm.DB, xenditAPIKey string) *gin.Engine {
 	RegisterOrderRoutes(r, db)
 	RegisterPaymentRoutes(r, db)
 	RegisterActionLogRoutes(r, db)
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return r
 }

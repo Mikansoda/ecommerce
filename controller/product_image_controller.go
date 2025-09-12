@@ -18,7 +18,30 @@ func NewProductImageController(s service.ProductImageService) *ProductImageContr
 	return &ProductImageController{service: s}
 }
 
-// Upload image (admin only)
+// UploadImage godoc
+// @Summary      Upload product image
+// @Description  Upload image for product (admin only, max 3 images per product)
+// @Tags         Product Images
+// @Security     BearerAuth
+// @Accept       multipart/form-data
+// @Produce      json
+// @Param        productId   path      int     true   "Product ID"
+// @Param        image       formData  file    true   "Image file to upload"
+// @Param        is_primary  formData  bool    false  "Set as primary image"
+// @Success      201  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid product ID",
+//   "detail": "strconv.ParseUint: parsing \"abc\": invalid syntax"
+// }
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to save image, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/products/{productId}/images [post]
 func (ctl *ProductImageController) UploadImage(c *gin.Context) {
 	productID := c.Param("productId")
 	var pid uint
@@ -65,7 +88,33 @@ func (ctl *ProductImageController) UploadImage(c *gin.Context) {
 	})
 }
 
-// Delete image (admin only)
+// DeleteImage godoc
+// @Summary      Delete product image
+// @Description  Soft delete product image by ID (admin only)
+// @Tags         Product Images
+// @Security     BearerAuth
+// @Produce      json
+// @Param        imageId  path      int  true  "Image ID"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid image ID",
+//   "detail": "strconv.ParseUint: parsing \"xyz\": invalid syntax"
+// }
+// @Failure      404  {object}  map[string]interface{}
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Image not found",
+//   "detail": "record not found"
+// }
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to delete image, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/images/{imageId} [delete]
 func (ctl *ProductImageController) DeleteImage(c *gin.Context) {
 	var id uint
 	if _, err := fmt.Sscan(c.Param("imageId"), &id); err != nil {
@@ -97,7 +146,33 @@ func (ctl *ProductImageController) DeleteImage(c *gin.Context) {
 	})
 }
 
-// Recover image (admin only)
+// RecoverImage godoc
+// @Summary      Recover deleted product image
+// @Description  Restore soft-deleted image (admin only)
+// @Tags         Product Images
+// @Security     BearerAuth
+// @Produce      json
+// @Param        imageId  path      int  true  "Image ID"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid image ID",
+//   "detail": "strconv.ParseUint: parsing \"abc\": invalid syntax"
+// }
+// @Failure      404  {object}  map[string]interface{}
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Image not found",
+//   "detail": "record not found"
+// }
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to recover image, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/images/{imageId}/recover [post]
 func (ctl *ProductImageController) RecoverImage(c *gin.Context) {
 	var id uint
 	if _, err := fmt.Sscan(c.Param("imageId"), &id); err != nil {

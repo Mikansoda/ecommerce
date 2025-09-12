@@ -37,7 +37,24 @@ type refreshReq struct {
 	RefreshToken string `json:"refresh_token" binding:"required"`
 }
 
-// Register
+// Register godoc
+// @Summary      Register a new user
+// @Description  Register user with email, username, and password
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      registerReq  true  "Register request"
+// @Success      201      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Example 201 {json} Success Example:
+// {
+//   "message":"Registered successfully, check your email for OTP"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message":"Failed to register, try again","detail":"error detail here"
+// }
+// @Router       /auth/register [post]
 func (a *AuthController) Register(c *gin.Context) {
 	var req registerReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -61,7 +78,24 @@ func (a *AuthController) Register(c *gin.Context) {
 	})
 }
 
-// Verify OTP
+// VerifyOTP godoc
+// @Summary      Verify user account with OTP
+// @Description  Verify OTP sent to user's email
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      verifyReq  true  "Verify OTP request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message":"Account successfully verified"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message":"Failed to verify OTP","detail":"error detail here"
+// }
+// @Router       /auth/verify-otp [post]
 func (a *AuthController) VerifyOTP(c *gin.Context) {
 	var req verifyReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -85,7 +119,24 @@ func (a *AuthController) VerifyOTP(c *gin.Context) {
 	})
 }
 
-// Login
+// Login godoc
+// @Summary      Login user
+// @Description  Authenticate user and return access & refresh token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      loginReq  true  "Login request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      401      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "access_token":"<access>","refresh_token":"<refresh>"
+// }
+// @Example 401 {json} Error Example:
+// {
+//   "message":"Login failed","detail":"invalid credentials"
+// }
+// @Router       /auth/login [post]
 func (a *AuthController) Login(c *gin.Context) {
 	var req loginReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -111,7 +162,24 @@ func (a *AuthController) Login(c *gin.Context) {
 	})
 }
 
-// Refresh token
+// Refresh godoc
+// @Summary      Refresh access token
+// @Description  Generate new access & refresh token
+// @Tags         Auth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      refreshReq  true  "Refresh token request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      401      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "access_token":"<new-access>","refresh_token":"<new-refresh>"
+// }
+// @Example 401 {json} Error Example:
+// {
+//   "message":"Failed to refresh token","detail":"refresh expired"
+// }
+// @Router       /auth/refresh [post]
 func (a *AuthController) Refresh(c *gin.Context) {
 	var req refreshReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -137,7 +205,23 @@ func (a *AuthController) Refresh(c *gin.Context) {
 	})
 }
 
-// Log out
+// Logout godoc
+// @Summary      Logout user
+// @Description  Invalidate access token
+// @Tags         Auth
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message":"Logged out successfully"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message":"Failed to logout","detail":"invalid token"
+// }
+// @Router       /auth/logout [post]
 func (a *AuthController) Logout(c *gin.Context) {
 	bearer := c.GetHeader("Authorization")
 	var token string

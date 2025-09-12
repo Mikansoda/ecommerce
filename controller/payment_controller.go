@@ -26,7 +26,20 @@ type createPaymentReq struct {
 	OrderID uuid.UUID `json:"order_id" binding:"required"`
 }
 
-// GET payments (admin only)
+// GetPayments godoc
+// @Summary      Get all payments
+// @Description  Return list of all payments (admin only)
+// @Tags         Payments
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {array}   entity.Payment
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch payments, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/payments [get]
 func (ctl *PaymentController) GetPayments(c *gin.Context) {
 	payments, err := ctl.service.GetAllPayments(c.Request.Context())
 	if err != nil {
@@ -39,7 +52,20 @@ func (ctl *PaymentController) GetPayments(c *gin.Context) {
 	c.JSON(http.StatusOK, payments)
 }
 
-// GET all payments made (self-requested by user)
+// GetUserPayments godoc
+// @Summary      Get user payments
+// @Description  Return list of payments for the authenticated user
+// @Tags         Payments
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {array}   entity.Payment
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch payments, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/payments [get]
 func (ctl *PaymentController) GetUserPayments(c *gin.Context) {
 	userID := c.MustGet("userID").(string)
 	payments, err := ctl.service.GetPaymentsByUserID(c.Request.Context(), userID)
@@ -53,7 +79,42 @@ func (ctl *PaymentController) GetUserPayments(c *gin.Context) {
 	c.JSON(http.StatusOK, payments)
 }
 
-// User create payment via Xendit
+// CreatePayment godoc
+// @Summary      Create new payment
+// @Description  Create a payment invoice via Xendit (user only)
+// @Tags         Payments
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request   body      createPaymentReq  true  "Order ID"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Payment created",
+//   "payment_id": "uuid-here",
+//   "xendit_id": "inv-12345",
+//   "invoice_url": "https://checkout.xendit.co/invoices/inv-12345",
+//   "status": "pending"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid order ID",
+//   "detail": "some error message"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "order not found",
+//   "detail": "record not found"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to call payment gateway, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/payments/xendit [post]
 func (ctl *PaymentController) CreatePayment(c *gin.Context) {
 	var req createPaymentReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -145,7 +206,31 @@ func (ctl *PaymentController) CreatePayment(c *gin.Context) {
 	})
 }
 
-// Webhook Xendit
+// XenditWebhook godoc
+// @Summary      Xendit webhook
+// @Description  Handle Xendit payment status update (admin only)
+// @Tags         Payments
+// @Accept       json
+// @Produce      json
+// @Param        payload   body      map[string]interface{}  true  "Webhook payload"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Payment successfully updated"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid payload",
+//   "detail": "some error message"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to update payment",
+//   "detail": "some error message"
+// }
+// @Router       /admin/payments/webhook/xendit [post]
 func (ctl *PaymentController) XenditWebhook(c *gin.Context) {
 	var payload map[string]interface{}
 	if err := c.ShouldBindJSON(&payload); err != nil {

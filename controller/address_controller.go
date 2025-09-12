@@ -39,7 +39,23 @@ type updateAddressReq struct {
 	PostalCode   *string `json:"postal_code,omitempty"`
 }
 
-// GET addresses (admin only)
+// GetAddresses godoc
+// @Summary      Get all addresses
+// @Description  Return list of all user addresses (admin only)
+// @Tags         Addresses
+// @Security     BearerAuth
+// @Produce      json
+// @Param        search   query     string  false  "Search by receiver name, city, or province"
+// @Param        limit    query     int     false  "Limit number of results"   default(10)
+// @Param        offset   query     int     false  "Offset for pagination"     default(0)
+// @Success      200      {array}   entity.Address
+// @Failure      500      {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch addresses, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/addresses [get]
 func (ctl *AddressController) GetAddresses(c *gin.Context) {
 	search := c.Query("search")
 	limitStr := c.Query("limit")
@@ -62,7 +78,31 @@ func (ctl *AddressController) GetAddresses(c *gin.Context) {
 	c.JSON(http.StatusOK, addresses)
 }
 
-// GET address (self-requested by user)
+// GetUserAddress godoc
+// @Summary      Get own address
+// @Description  Return the logged-in user's address
+// @Tags         Addresses
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200  {object}  entity.Address
+// @Failure      400  {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid user ID",
+//   "detail": "some error message"
+// }
+// @Failure      404  {object}  map[string]interface{}
+// @Example 404 {json} Error Example:
+// {
+//   "message": "No address found"
+// }
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch your address, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/addresses [get]
 func (ctl *AddressController) GetUserAddress(c *gin.Context) {
 	userIDStr := c.GetString("userID")
 	userID, err := uuid.Parse(userIDStr)
@@ -90,7 +130,28 @@ func (ctl *AddressController) GetUserAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, address)
 }
 
-// Create address (self-created by user)
+// CreateAddress godoc
+// @Summary      Create a new address
+// @Description  Create address for logged-in user (user can only have one)
+// @Tags         Addresses
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      createAddressReq  true  "Address request body"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "You already have an address",
+//   "detail": "user already has an address"
+// }
+// @Failure      500      {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to create address, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/addresses [post]
 func (ctl *AddressController) CreateAddress(c *gin.Context) {
 	userID, _ := uuid.Parse(c.GetString("userID"))
 	var req createAddressReq
@@ -131,7 +192,33 @@ func (ctl *AddressController) CreateAddress(c *gin.Context) {
 	})
 }
 
-// Update address (self-updated by user)
+// UpdateAddress godoc
+// @Summary      Update address
+// @Description  Update logged-in user's address
+// @Tags         Addresses
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      updateAddressReq  true  "Address update request body"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid input data",
+//   "detail": "some error message"
+// }
+// @Failure      404      {object}  map[string]interface{}
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Address not found"
+// }
+// @Failure      500      {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to update address, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/addresses [patch]
 func (ctl *AddressController) UpdateAddress(c *gin.Context) {
 	userID, _ := uuid.Parse(c.GetString("userID"))
 	var req updateAddressReq
@@ -185,7 +272,32 @@ func (ctl *AddressController) UpdateAddress(c *gin.Context) {
 	})
 }
 
-// Delete address (self-delete by user)
+// DeleteAddress godoc
+// @Summary      Delete address
+// @Description  Delete logged-in user's address by ID
+// @Tags         Addresses
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id   path      string  true  "Address ID (UUID)"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      403  {object}  map[string]interface{}
+// @Example 403 {json} Error Example:
+// {
+//   "message": "You are not allowed to delete this address",
+//   "detail": "forbidden"
+// }
+// @Failure      404  {object}  map[string]interface{}
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Address not found"
+// }
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to delete address, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/addresses/{id} [delete]
 func (ctl *AddressController) DeleteAddress(c *gin.Context) {
 	id := c.Param("id")
 	userID, _ := uuid.Parse(c.GetString("userID"))
@@ -211,7 +323,26 @@ func (ctl *AddressController) DeleteAddress(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Address successfully deleted"})
 }
 
-// Recover (admin only)
+// RecoverAddress godoc
+// @Summary      Recover deleted address
+// @Description  Recover a soft-deleted address (admin only)
+// @Tags         Addresses
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id   path      string  true  "Address ID (UUID)"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Address not found"
+// }
+// @Failure      500  {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to recover address, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/addresses/{id}/recover [post]
 func (ctl *AddressController) RecoverAddress(c *gin.Context) {
 	id := c.Param("id")
 	if err := ctl.service.RecoverAddress(c.Request.Context(), id, uuid.Nil); err != nil {

@@ -44,7 +44,8 @@ func (s *productImageService) Upload(ctx context.Context, productID uint, filePa
 		return nil, errors.New("failed to open file: " + err.Error())
 	}
 	defer f.Close()
-
+	// TODO: REVISI INI
+    // Cloud init jangan dipanggil tiap upload
 	cld := config.InitCloud()
 	uploadRes, err := cld.Upload.Upload(ctx, f, uploader.UploadParams{
 		Folder: "ecommerce/products",

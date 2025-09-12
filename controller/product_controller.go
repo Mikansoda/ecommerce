@@ -38,7 +38,23 @@ type updateProductReq struct {
 	ExpiryYear  *int     `json:"expiry_year,omitempty"`
 }
 
-// GET products
+// GetProducts godoc
+// @Summary      Get list of products
+// @Description  Return list of products with optional search, category filter, pagination
+// @Tags         Products
+// @Produce      json
+// @Param        search   query     string  false  "Search by product name"
+// @Param        category query     string  false  "Filter by category name"
+// @Param        limit    query     int     false  "Limit number of results"   default(10)
+// @Param        offset   query     int     false  "Offset for pagination"     default(0)
+// @Success      200      {array}   entity.Product
+// @Failure      500      {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch products, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /products [get]
 func (ctl *ProductController) GetProducts(c *gin.Context) {
 	search := c.Query("search")
 	category := c.Query("category")
@@ -62,7 +78,16 @@ func (ctl *ProductController) GetProducts(c *gin.Context) {
 	c.JSON(http.StatusOK, products)
 }
 
-// GET product by ID
+// GetProductByID godoc
+// @Summary      Get product by ID
+// @Description  Return single product details by ID
+// @Tags         Products
+// @Produce      json
+// @Param        productId   path      int  true  "Product ID"
+// @Success      200         {object}  entity.Product
+// @Failure      400         {object}  map[string]interface{}
+// @Failure      404         {object}  map[string]interface{}
+// @Router       /products/{productId} [get]
 func (ctl *ProductController) GetProductByID(c *gin.Context) {
 	idStr := c.Param("productId")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -86,7 +111,18 @@ func (ctl *ProductController) GetProductByID(c *gin.Context) {
 	c.JSON(http.StatusOK, product)
 }
 
-// Create product (admin only)
+// CreateProduct godoc
+// @Summary      Create new product
+// @Description  Admin can create a new product
+// @Tags         Products
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request   body      createProductReq  true  "Product data"
+// @Success      200       {object}  map[string]interface{}
+// @Failure      400       {object}  map[string]interface{}
+// @Failure      500       {object}  map[string]interface{}
+// @Router       /admin/products [post]
 func (ctl *ProductController) CreateProduct(c *gin.Context) {
 	var req createProductReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -123,7 +159,20 @@ func (ctl *ProductController) CreateProduct(c *gin.Context) {
 	})
 }
 
-// Update product (admin only)
+// UpdateProduct godoc
+// @Summary      Update existing product
+// @Description  Admin can update product fields by ID
+// @Tags         Products
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        productId   path      int               true  "Product ID"
+// @Param        request     body      updateProductReq  true  "Updated product data"
+// @Success      200         {object}  map[string]interface{}
+// @Failure      400         {object}  map[string]interface{}
+// @Failure      404         {object}  map[string]interface{}
+// @Failure      500         {object}  map[string]interface{}
+// @Router       /admin/products/{productId} [patch]
 func (ctl *ProductController) UpdateProduct(c *gin.Context) {
 	idStr := c.Param("productId")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -192,7 +241,18 @@ func (ctl *ProductController) UpdateProduct(c *gin.Context) {
 	})
 }
 
-// Delete product (admin only)
+// DeleteProduct godoc
+// @Summary      Delete product
+// @Description  Admin can soft-delete a product by ID
+// @Tags         Products
+// @Security     BearerAuth
+// @Produce      json
+// @Param        productId   path      int  true  "Product ID"
+// @Success      200         {object}  map[string]interface{}
+// @Failure      400         {object}  map[string]interface{}
+// @Failure      404         {object}  map[string]interface{}
+// @Failure      500         {object}  map[string]interface{}
+// @Router       /admin/products/{productId} [delete]
 func (ctl *ProductController) DeleteProduct(c *gin.Context) {
 	idStr := c.Param("productId")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -225,7 +285,18 @@ func (ctl *ProductController) DeleteProduct(c *gin.Context) {
 	})
 }
 
-// Recover product (admin only)
+// RecoverProduct godoc
+// @Summary      Recover deleted product
+// @Description  Admin can recover a previously deleted product
+// @Tags         Products
+// @Security     BearerAuth
+// @Produce      json
+// @Param        productId   path      int  true  "Product ID"
+// @Success      200         {object}  map[string]interface{}
+// @Failure      400         {object}  map[string]interface{}
+// @Failure      404         {object}  map[string]interface{}
+// @Failure      500         {object}  map[string]interface{}
+// @Router       /admin/products/{productId}/recover [post]
 func (ctl *ProductController) RecoverProduct(c *gin.Context) {
 	idStr := c.Param("productId")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)

@@ -8,6 +8,7 @@ import (
 
 	"ecommerce/entity"
 	"ecommerce/repository"
+	"ecommerce/helper"
 
 	"github.com/google/uuid"
 )
@@ -142,7 +143,7 @@ func (s *orderService) CreateOrder(ctx context.Context, userID, addressID uuid.U
             "Well Sprout",
         username, order.ID, subtotal, shippingFee, total,
     )
-	_ = SendEmail(userEmail, subject, body)
+	_ = helper.SendEmail(userEmail, subject, body)
 
 	return order, nil
 }
@@ -189,7 +190,7 @@ func (s *orderService) AutoCancelOrders() {
             "Well Sprout", 
             username, order.ID,
         )
-		_ = SendEmail(userEmail, subject, body)
+		_ = helper.SendEmail(userEmail, subject, body)
 	}
 }
 

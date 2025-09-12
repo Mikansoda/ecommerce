@@ -1,4 +1,4 @@
-package service
+package helper
 
 import (
 	"errors"
@@ -48,7 +48,7 @@ func GenerateRefreshToken(uid, email, role string) (string, time.Time, error) {
 	return s, exp, err
 }
 
-func parseAccess(token string) (*JWTClaims, error) {
+func ParseAccess(token string) (*JWTClaims, error) {
 	t, err := jwt.ParseWithClaims(token, &JWTClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.C.JWTAccessKey), nil
 	})
@@ -61,7 +61,7 @@ func parseAccess(token string) (*JWTClaims, error) {
 	return nil, errors.New("invalid")
 }
 
-func parseRefresh(token string) (*JWTClaims, string, string, error) {
+func ParseRefresh(token string) (*JWTClaims, string, string, error) {
 	t, err := jwt.ParseWithClaims(token, &JWTClaims{}, func(t *jwt.Token) (interface{}, error) {
 		return []byte(config.C.JWTRefreshKey), nil
 	})

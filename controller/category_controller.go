@@ -28,7 +28,21 @@ type updateCategoryReq struct {
 	Name *string `json:"name,omitempty"`
 }
 
-// GET categories
+// GetCategories godoc
+// @Summary      Get all categories
+// @Description  Return list of categories (public)
+// @Tags         Categories
+// @Produce      json
+// @Param        limit    query     int  false  "Limit number of results"   default(10)
+// @Param        offset   query     int  false  "Offset for pagination"     default(0)
+// @Success      200      {array}   entity.ProductCategory
+// @Failure      500      {object}  map[string]interface{}
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch categories, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /categories [get]
 func (ctl *CategoryController) GetCategories(c *gin.Context) {
 	limitStr := c.Query("limit")
 	offsetStr := c.Query("offset")
@@ -50,7 +64,28 @@ func (ctl *CategoryController) GetCategories(c *gin.Context) {
 	c.JSON(http.StatusOK, categories)
 }
 
-// Create category (admin only)
+// CreateCategory godoc
+// @Summary      Create category
+// @Description  Create a new category (admin only)
+// @Tags         Categories
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      createCategoryReq  true  "Create Category Request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid input data",
+//   "detail": "binding error detail"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to create category, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/categories [post]
 func (ctl *CategoryController) CreateCategory(c *gin.Context) {
 	var req createCategoryReq
 	if err := c.ShouldBindJSON(&req); err != nil {
@@ -78,7 +113,35 @@ func (ctl *CategoryController) CreateCategory(c *gin.Context) {
 	})
 }
 
-// Update category (admin only)
+// UpdateCategory godoc
+// @Summary      Update category
+// @Description  Update an existing category (admin only)
+// @Tags         Categories
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        id       path      int                true  "Category ID"
+// @Param        request  body      updateCategoryReq  true  "Update Category Request"
+// @Success      200      {object}  map[string]interface{}
+// @Failure      400      {object}  map[string]interface{}
+// @Failure      404      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid category ID",
+//   "detail": "parsing error detail"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Category not found",
+//   "detail": "gorm.ErrRecordNotFound"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to update category, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/categories/{id} [patch]
 func (ctl *CategoryController) UpdateCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -128,7 +191,37 @@ func (ctl *CategoryController) UpdateCategory(c *gin.Context) {
 	})
 }
 
-// Delete category (admin only)
+// DeleteCategory godoc
+// @Summary      Delete category
+// @Description  Soft delete a category (admin only)
+// @Tags         Categories
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id   path      int  true  "Category ID"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Category successfully deleted"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid category ID",
+//   "detail": "parsing error detail"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Category not found",
+//   "detail": "category not found"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to delete category, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/categories/{id} [delete]
 func (ctl *CategoryController) DeleteCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -161,7 +254,37 @@ func (ctl *CategoryController) DeleteCategory(c *gin.Context) {
 	})
 }
 
-// Recover category
+// RecoverCategory godoc
+// @Summary      Recover category
+// @Description  Restore a soft-deleted category (admin only)
+// @Tags         Categories
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id   path      int  true  "Category ID"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Category successfully recovered"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid category ID",
+//   "detail": "parsing error detail"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Category not found",
+//   "detail": "category not found"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to recover category, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /admin/categories/{id}/recover [post]
 func (ctl *CategoryController) RecoverCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)

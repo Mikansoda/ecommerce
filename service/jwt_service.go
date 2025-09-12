@@ -1,9 +1,12 @@
 package service
 
-import "time"
+import (
+	"time"
+	"ecommerce/helper"
+)
 
-func ParseAccessForMiddleware(token string) (*JWTClaims, error) {
-	return parseAccess(token)
+func ParseAccessForMiddleware(token string) (*helper.JWTClaims, error) {
+	return helper.ParseAccess(token)
 }
 
 func AccessBlacklistLookup(token string) (time.Time, bool) {

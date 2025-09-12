@@ -48,7 +48,7 @@ func RegisterProductRoutes(r *gin.Engine, db *gorm.DB) {
 		admin.PATCH("/products/:productId", productCtl.UpdateProduct)
 		admin.DELETE("/products/:productId", productCtl.DeleteProduct)
 		admin.POST("/products/:productId/recover", productCtl.RecoverProduct)
-
+        // 5 req/menit
 		admin.POST("/products/:productId/images", middleware.RateLimit(5, time.Minute), imageCtl.UploadImage)
 		admin.DELETE("/images/:imageId", middleware.RateLimit(10, time.Minute), imageCtl.DeleteImage)
 		admin.POST("/images/:imageId/recover", middleware.RateLimit(10, time.Minute), imageCtl.RecoverImage)

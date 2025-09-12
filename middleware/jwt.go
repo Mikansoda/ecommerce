@@ -15,18 +15,20 @@ func Auth(requiredRoles ...string) gin.HandlerFunc {
 	for _, r := range requiredRoles {
 		roleSet[r] = struct{}{}
 	}
-
+    // Ambil header Authorization.
 	return func(c *gin.Context) {
 		auth := c.GetHeader("Authorization")
+		// Pastikan formatnya Bearer <token>.
 		if !strings.HasPrefix(auth, "Bearer ") {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
 				"error": "Missing bearer token",
 			})
 			return
 		}
+		// buang prefix "Bearer "
 		token := strings.TrimPrefix(auth, "Bearer ")
 
-		// Cek blacklist
+		// Cek token udah blacklist atau belum.
 		if exp, ok := service.AccessBlacklistLookup(token); ok {
 			if time.Now().Before(exp) {
 				c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -35,7 +37,7 @@ func Auth(requiredRoles ...string) gin.HandlerFunc {
 				return
 			}
 		}
-
+        // Parse/bongkar isi token → ambil claim (UserID, Role, dsb).
 		claims, err := service.ParseAccessForMiddleware(token)
 		if err != nil {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{
@@ -43,7 +45,7 @@ func Auth(requiredRoles ...string) gin.HandlerFunc {
 			})
 			return
 		}
-		// inject to context
+		// Taruh claim ke gin.Context biar bisa dipakai controller.
 		c.Set("userID", claims.UserID)
 		c.Set("email", claims.Email)
 		c.Set("role", claims.Role)
@@ -57,6 +59,7 @@ func Auth(requiredRoles ...string) gin.HandlerFunc {
 				return
 			}
 		}
+		// lanjut ke request kalo passed
 		c.Next()
 	}
 }

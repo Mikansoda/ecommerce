@@ -11,6 +11,7 @@ import (
 
 	"ecommerce/entity"
 	"ecommerce/repository"
+	"ecommerce/helper"
 
 	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
@@ -73,7 +74,7 @@ func (s *authService) Register(ctx context.Context, username, email, password, r
 		return errors.New("failed to create user: " + err.Error())
 	}
 
-	if err := SendEmailOTP(email, username, otpPlain); err != nil {
+	if err := helper.SendEmailOTP(email, username, otpPlain); err != nil {
 		return errors.New("failed to send OTP email: " + err.Error())
 	}
 	return nil
@@ -110,11 +111,11 @@ func (s *authService) Login(ctx context.Context, email, password string) (string
 	if !u.IsActive {
 		return "", "", errors.New("failed to login: account not active, verify otp")
 	}
-	access, _, err := GenerateAccessToken(u.ID.String(), u.Email, string(u.Role))
+	access, _, err := helper.GenerateAccessToken(u.ID.String(), u.Email, string(u.Role))
 	if err != nil {
 		return "", "", errors.New("failed to generate access token: " + err.Error())
 	}
-	refresh, rexp, err := GenerateRefreshToken(u.ID.String(), u.Email, string(u.Role))
+	refresh, rexp, err := helper.GenerateRefreshToken(u.ID.String(), u.Email, string(u.Role))
 	if err != nil {
 		return "", "", errors.New("failed to generate refresh token: " + err.Error())
 	}
@@ -128,7 +129,7 @@ func (s *authService) Login(ctx context.Context, email, password string) (string
 }
 
 func (s *authService) Refresh(ctx context.Context, refreshToken string) (string, string, error) {
-	claims, email, _, err := parseRefresh(refreshToken)
+	claims, email, _, err := helper.ParseRefresh(refreshToken)
 	if err != nil {
 		return "", "", errors.New("failed to refresh token: invalid refresh token")
 	}
@@ -144,11 +145,11 @@ func (s *authService) Refresh(ctx context.Context, refreshToken string) (string,
 		return "", "", errors.New("failed to refresh token: invalid refresh token")
 	}
 
-	access, _, err := GenerateAccessToken(claims.UserID, u.Email, string(u.Role))
+	access, _, err := helper.GenerateAccessToken(claims.UserID, u.Email, string(u.Role))
 	if err != nil {
 		return "", "", errors.New("failed to refresh token: " + err.Error())
 	}
-	newRefresh, rexp, err := GenerateRefreshToken(claims.UserID, u.Email, string(u.Role))
+	newRefresh, rexp, err := helper.GenerateRefreshToken(claims.UserID, u.Email, string(u.Role))
 	if err != nil {
 		return "", "", errors.New("failed to refresh token: " + err.Error())
 	}
@@ -166,7 +167,7 @@ var accessBlacklist = make(map[string]time.Time)
 
 func (s *authService) Logout(ctx context.Context, accessToken string) error {
 	// blacklist until expiry claim
-	claims, err := parseAccess(accessToken)
+	claims, err := helper.ParseAccess(accessToken)
 	if err != nil {
 		return errors.New("failed to logout: invalid token")
 	}

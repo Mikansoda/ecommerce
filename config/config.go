@@ -7,6 +7,7 @@ import (
 	"fmt" 
 )
 
+// storage for app configurations as written
 type AppConfig struct {
 	AppPort        string 
 	DBDSN          string 
@@ -24,6 +25,8 @@ type AppConfig struct {
 
 var C AppConfig
 
+// isi struct dengan yang ada di .env
+// Init() → loader utama config (isi struct C).
 func Init() {
 	C = AppConfig{
 		AppPort: getenv("APP_PORT", "8007"),
@@ -47,6 +50,7 @@ func Init() {
 	}
 }
 
+// ambil nilai env berdasarkan k, mis APP_PORT, DB_USER, dll yg wajib
 func must(k string) string {
 	v := os.Getenv(k)
 	if v == "" {
@@ -55,6 +59,7 @@ func must(k string) string {
 	return v
 }
 
+// yg bisa pake/fallback default
 func getenv(k, def string) string {
 	v := os.Getenv(k)
 	if v == "" {
@@ -63,6 +68,8 @@ func getenv(k, def string) string {
 	return v
 }
 
+// Dipake buat nilai numeric di env (contoh: ACCESS_TTL_MIN, SMTP_PORT). 
+// Convert string ke int
 func atoi(s string) int {
 	i, _ := strconv.Atoi(s)
 	return i

@@ -23,7 +23,26 @@ type addCartItemReq struct {
 	Quantity  int  `json:"quantity" binding:"required"`
 }
 
-// GET cart (self-requested by user)
+// GetCart godoc
+// @Summary      Get cart
+// @Description  Return current user's cart
+// @Tags         Cart
+// @Security     BearerAuth
+// @Produce      json
+// @Success      200      {object}  entity.Cart
+// @Failure      400      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid user ID",
+//   "detail": "parsing error detail"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to fetch your cart, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/cart [get]
 func (ctl *CartController) GetCart(c *gin.Context) {
 	userIDStr := c.GetString("userID")
 	userID, err := uuid.Parse(userIDStr)
@@ -45,7 +64,35 @@ func (ctl *CartController) GetCart(c *gin.Context) {
 	c.JSON(http.StatusOK, cart)
 }
 
-// Add item to cart
+// AddItem godoc
+// @Summary      Add item to cart
+// @Description  Add a product into the current user's cart
+// @Tags         Cart
+// @Security     BearerAuth
+// @Accept       json
+// @Produce      json
+// @Param        request  body      addCartItemReq  true  "Add Cart Item Request"
+// @Success      201      {object}  entity.CartItem
+// @Failure      400      {object}  map[string]interface{}
+// @Failure      403      {object}  map[string]interface{}
+// @Failure      404      {object}  map[string]interface{}
+// @Failure      500      {object}  map[string]interface{}
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid input data",
+//   "detail": "binding error detail"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Product not found",
+//   "detail": "product not found"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to add cart item, try again later",
+//   "detail": "some error message"
+// }
+// @Router       /user/cart/items [post]
 func (ctl *CartController) AddItem(c *gin.Context) {
 	userID, _ := uuid.Parse(c.GetString("userID"))
 	var req addCartItemReq
@@ -82,7 +129,38 @@ func (ctl *CartController) AddItem(c *gin.Context) {
 	c.JSON(http.StatusCreated, item)
 }
 
-// Delete item in cart (self-delete by user)
+// DeleteItem godoc
+// @Summary      Delete item from cart
+// @Description  Remove a cart item owned by the current user
+// @Tags         Cart
+// @Security     BearerAuth
+// @Produce      json
+// @Param        id   path      string  true  "Cart Item ID"
+// @Success      200  {object}  map[string]interface{}
+// @Failure      400  {object}  map[string]interface{}
+// @Failure      403  {object}  map[string]interface{}
+// @Failure      404  {object}  map[string]interface{}
+// @Failure      500  {object}  map[string]interface{}
+// @Example 200 {json} Success Example:
+// {
+//   "message": "Cart item deleted"
+// }
+// @Example 400 {json} Error Example:
+// {
+//   "message": "Invalid cart item id",
+//   "detail": "uuid parsing error detail"
+// }
+// @Example 404 {json} Error Example:
+// {
+//   "message": "Cart item not found",
+//   "detail": "cart item not found"
+// }
+// @Example 500 {json} Error Example:
+// {
+//   "message": "Failed to delete cart item",
+//   "detail": "some error message"
+// }
+// @Router       /user/cart/items/{id} [delete]
 func (ctl *CartController) DeleteItem(c *gin.Context) {
 	userID, _ := uuid.Parse(c.GetString("userID"))
 	itemIDStr := c.Param("id")
