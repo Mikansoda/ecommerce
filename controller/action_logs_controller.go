@@ -21,7 +21,7 @@ func NewActionLogController(s service.ActionLogService) *ActionLogController {
 // GetLogs godoc
 // @Summary      Get all action logs
 // @Description  Return list of all action logs (admin only)
-// @Tags         ActionLogs
+// @Tags         Action Logs
 // @Security     BearerAuth
 // @Produce      json
 // @Success      200  {array}   entity.ActionLog
@@ -47,7 +47,7 @@ func (ctl *ActionLogController) GetLogs(c *gin.Context) {
 // GetLogByID godoc
 // @Summary      Get log by ID
 // @Description  Return a single log by its ID (admin only)
-// @Tags         ActionLogs
+// @Tags         Action Logs
 // @Security     BearerAuth
 // @Produce      json
 // @Param        id   path      string  true  "Log ID (UUID)"

@@ -1,4 +1,1714 @@
+definitions:
+  controller.addCartItemReq:
+    properties:
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  controller.createAddressReq:
+    properties:
+      address_line:
+        type: string
+      city:
+        type: string
+      phone_number:
+        type: string
+      postal_code:
+        type: string
+      province:
+        type: string
+      receiver_name:
+        type: string
+    required:
+    - address_line
+    - city
+    - phone_number
+    - postal_code
+    - province
+    - receiver_name
+    type: object
+  controller.createCategoryReq:
+    properties:
+      name:
+        type: string
+    required:
+    - name
+    type: object
+  controller.createPaymentReq:
+    properties:
+      order_id:
+        type: string
+    required:
+    - order_id
+    type: object
+  controller.createProductReq:
+    properties:
+      category_ids:
+        items:
+          type: integer
+        type: array
+      description:
+        type: string
+      expiry_year:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    required:
+    - category_ids
+    - description
+    - name
+    - price
+    - stock
+    type: object
+  controller.loginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  controller.refreshReq:
+    properties:
+      refresh_token:
+        type: string
+    required:
+    - refresh_token
+    type: object
+  controller.registerReq:
+    properties:
+      email:
+        type: string
+      password:
+        minLength: 6
+        type: string
+      username:
+        maxLength: 20
+        minLength: 8
+        type: string
+    required:
+    - email
+    - password
+    - username
+    type: object
+  controller.updateAddressReq:
+    properties:
+      address_line:
+        type: string
+      city:
+        type: string
+      phone_number:
+        type: string
+      postal_code:
+        type: string
+      province:
+        type: string
+      receiver_name:
+        type: string
+    type: object
+  controller.updateCategoryReq:
+    properties:
+      name:
+        type: string
+    type: object
+  controller.updateProductReq:
+    properties:
+      category_ids:
+        items:
+          type: integer
+        type: array
+      description:
+        type: string
+      expiry_year:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
+  controller.verifyReq:
+    properties:
+      email:
+        type: string
+      otp:
+        type: string
+    required:
+    - email
+    - otp
+    type: object
+  entity.ActionLog:
+    properties:
+      action:
+        type: string
+      actor_id:
+        description: nullable (for logins/register)
+        type: string
+      actor_type:
+        type: string
+      created_at:
+        type: string
+      entity_id:
+        type: string
+      entity_type:
+        type: string
+      id:
+        type: string
+    type: object
+  entity.Address:
+    properties:
+      address_line:
+        type: string
+      city:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      phone_number:
+        type: string
+      postal_code:
+        description: using VARCHAR instead of INT to prevent deletion of 0 at start
+          of postal code
+        type: string
+      province:
+        type: string
+      receiver_name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  entity.Cart:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      items:
+        items:
+          $ref: '#/definitions/entity.CartItem'
+        type: array
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.CartItem:
+    properties:
+      cart_id:
+        type: string
+      id:
+        type: string
+      product:
+        $ref: '#/definitions/entity.Product'
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  entity.Order:
+    properties:
+      address:
+        $ref: '#/definitions/entity.Address'
+      address_id:
+        type: string
+      created_at:
+        type: string
+      expired_at:
+        type: string
+      id:
+        type: string
+      order_date:
+        type: string
+      order_items:
+        items:
+          $ref: '#/definitions/entity.OrderItem'
+        type: array
+      payment:
+        $ref: '#/definitions/entity.Payment'
+      shipping_fee:
+        type: number
+      status:
+        type: string
+      subtotal:
+        type: number
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+      user_id:
+        type: string
+    type: object
+  entity.OrderItem:
+    properties:
+      id:
+        type: string
+      order_id:
+        type: string
+      price:
+        type: number
+      product:
+        $ref: '#/definitions/entity.Product'
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+    type: object
+  entity.Payment:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: string
+      order:
+        $ref: '#/definitions/entity.Order'
+      order_id:
+        type: string
+      payment_type:
+        type: string
+      status:
+        type: string
+      updated_at:
+        type: string
+      xendit_invoice_id:
+        type: string
+    type: object
+  entity.Product:
+    properties:
+      categories:
+        description: many-to-many, many products can belong to many categories, joint
+          via PIVOT table
+        items:
+          $ref: '#/definitions/entity.ProductCategory'
+        type: array
+      created_at:
+        type: string
+      description:
+        type: string
+      expiry_year:
+        type: integer
+      id:
+        type: integer
+      images:
+        description: Relations
+        items:
+          $ref: '#/definitions/entity.ProductImage'
+        type: array
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  entity.ProductCategory:
+    properties:
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      products:
+        description: Relations
+        items:
+          $ref: '#/definitions/entity.Product'
+        type: array
+      updated_at:
+        type: string
+    type: object
+  entity.ProductImage:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      image_url:
+        type: string
+      is_primary:
+        type: boolean
+      product_id:
+        type: integer
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /admin/addresses:
+    get:
+      description: Return list of all user addresses (admin only)
+      parameters:
+      - description: Search by receiver name, city, or province
+        in: query
+        name: search
+        type: string
+      - default: 10
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Address'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all addresses
+      tags:
+      - Addresses
+  /admin/addresses/{id}/recover:
+    post:
+      description: Recover a soft-deleted address (admin only)
+      parameters:
+      - description: Address ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Recover deleted address
+      tags:
+      - Addresses
+  /admin/categories:
+    post:
+      consumes:
+      - application/json
+      description: Create a new category (admin only)
+      parameters:
+      - description: Create Category Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.createCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create category
+      tags:
+      - Categories
+  /admin/categories/{id}:
+    delete:
+      description: Soft delete a category (admin only)
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete category
+      tags:
+      - Categories
+    patch:
+      consumes:
+      - application/json
+      description: Update an existing category (admin only)
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Update Category Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.updateCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update category
+      tags:
+      - Categories
+  /admin/categories/{id}/recover:
+    post:
+      description: Restore a soft-deleted category (admin only)
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Recover category
+      tags:
+      - Categories
+  /admin/images/{imageId}:
+    delete:
+      description: Soft delete product image by ID (admin only)
+      parameters:
+      - description: Image ID
+        in: path
+        name: imageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete product image
+      tags:
+      - Product Images
+  /admin/images/{imageId}/recover:
+    post:
+      description: Restore soft-deleted image (admin only)
+      parameters:
+      - description: Image ID
+        in: path
+        name: imageId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Recover deleted product image
+      tags:
+      - Product Images
+  /admin/logs:
+    get:
+      description: Return list of all action logs (admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.ActionLog'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all action logs
+      tags:
+      - Action Logs
+  /admin/logs/{id}:
+    get:
+      description: Return a single log by its ID (admin only)
+      parameters:
+      - description: Log ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ActionLog'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get log by ID
+      tags:
+      - Action Logs
+  /admin/orders:
+    get:
+      description: Return list of all orders (admin only)
+      parameters:
+      - description: Filter by order status (e.g. pending, completed)
+        in: query
+        name: status
+        type: string
+      - default: 10
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Order'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all orders
+      tags:
+      - Orders
+  /admin/orders/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Update the status of an existing order (admin only)
+      parameters:
+      - description: Order ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Update Order Status Request
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update order status
+      tags:
+      - Orders
+  /admin/payments:
+    get:
+      description: Return list of all payments (admin only)
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Payment'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get all payments
+      tags:
+      - Payments
+  /admin/payments/webhook/xendit:
+    post:
+      consumes:
+      - application/json
+      description: Handle Xendit payment status update (admin only)
+      parameters:
+      - description: Webhook payload
+        in: body
+        name: payload
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Xendit webhook
+      tags:
+      - Payments
+  /admin/products:
+    post:
+      consumes:
+      - application/json
+      description: Admin can create a new product
+      parameters:
+      - description: Product data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.createProductReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create new product
+      tags:
+      - Products
+  /admin/products/{productId}:
+    delete:
+      description: Admin can soft-delete a product by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete product
+      tags:
+      - Products
+    patch:
+      consumes:
+      - application/json
+      description: Admin can update product fields by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      - description: Updated product data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.updateProductReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update existing product
+      tags:
+      - Products
+  /admin/products/{productId}/images:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload image for product (admin only, max 3 images per product)
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      - description: Image file to upload
+        in: formData
+        name: image
+        required: true
+        type: file
+      - description: Set as primary image
+        in: formData
+        name: is_primary
+        type: boolean
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Upload product image
+      tags:
+      - Product Images
+  /admin/products/{productId}/recover:
+    post:
+      description: Admin can recover a previously deleted product
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Recover deleted product
+      tags:
+      - Products
+  /admin/reports/selling:
+    get:
+      description: Get best-selling or least-selling products (admin only)
+      parameters:
+      - default: best
+        description: Report type (best/least)
+        enum:
+        - best
+        - least
+        in: query
+        name: type
+        type: string
+      - default: 5
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              additionalProperties: true
+              type: object
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Sales report
+      tags:
+      - Reports
+  /admin/reports/stock:
+    get:
+      description: Get low-stock or high-stock products (admin only)
+      parameters:
+      - default: low
+        description: Report type (low/high)
+        enum:
+        - low
+        - high
+        in: query
+        name: type
+        type: string
+      - default: 5
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Product'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Stock report
+      tags:
+      - Reports
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user and return access & refresh token
+      parameters:
+      - description: Login request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.loginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Login user
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      description: Invalidate access token
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Logout user
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: Generate new access & refresh token
+      parameters:
+      - description: Refresh token request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.refreshReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Refresh access token
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Register user with email, username, and password
+      parameters:
+      - description: Register request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.registerReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a new user
+      tags:
+      - Auth
+  /auth/verify-otp:
+    post:
+      consumes:
+      - application/json
+      description: Verify OTP sent to user's email
+      parameters:
+      - description: Verify OTP request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.verifyReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Verify user account with OTP
+      tags:
+      - Auth
+  /categories:
+    get:
+      description: Return list of categories (public)
+      parameters:
+      - default: 10
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.ProductCategory'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all categories
+      tags:
+      - Categories
+  /products:
+    get:
+      description: Return list of products with optional search, category filter,
+        pagination
+      parameters:
+      - description: Search by product name
+        in: query
+        name: search
+        type: string
+      - description: Filter by category name
+        in: query
+        name: category
+        type: string
+      - default: 10
+        description: Limit number of results
+        in: query
+        name: limit
+        type: integer
+      - default: 0
+        description: Offset for pagination
+        in: query
+        name: offset
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Product'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get list of products
+      tags:
+      - Products
+  /products/{productId}:
+    get:
+      description: Return single product details by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: productId
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Product'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get product by ID
+      tags:
+      - Products
+  /user/addresses:
+    get:
+      description: Return the logged-in user's address
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Address'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get own address
+      tags:
+      - Addresses
+    patch:
+      consumes:
+      - application/json
+      description: Update logged-in user's address
+      parameters:
+      - description: Address update request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.updateAddressReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update address
+      tags:
+      - Addresses
+    post:
+      consumes:
+      - application/json
+      description: Create address for logged-in user (user can only have one)
+      parameters:
+      - description: Address request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.createAddressReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new address
+      tags:
+      - Addresses
+  /user/addresses/{id}:
+    delete:
+      description: Delete logged-in user's address by ID
+      parameters:
+      - description: Address ID (UUID)
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete address
+      tags:
+      - Addresses
+  /user/cart:
+    get:
+      description: Return current user's cart
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Cart'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get cart
+      tags:
+      - Cart
+  /user/cart/items:
+    post:
+      consumes:
+      - application/json
+      description: Add a product into the current user's cart
+      parameters:
+      - description: Add Cart Item Request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.addCartItemReq'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.CartItem'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Add item to cart
+      tags:
+      - Cart
+  /user/cart/items/{id}:
+    delete:
+      description: Remove a cart item owned by the current user
+      parameters:
+      - description: Cart Item ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Forbidden
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete item from cart
+      tags:
+      - Cart
+  /user/orders:
+    get:
+      description: Return list of orders belonging to the logged-in user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Order'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user orders
+      tags:
+      - Orders
+    post:
+      consumes:
+      - application/json
+      description: Create an order from the user's cart
+      parameters:
+      - description: Create Order Request
+        in: body
+        name: request
+        required: true
+        schema:
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new order
+      tags:
+      - Orders
+  /user/payments:
+    get:
+      description: Return list of payments for the authenticated user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Payment'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Get user payments
+      tags:
+      - Payments
+  /user/payments/xendit:
+    post:
+      consumes:
+      - application/json
+      description: Create a payment invoice via Xendit (user only)
+      parameters:
+      - description: Order ID
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.createPaymentReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create new payment
+      tags:
+      - Payments
 swagger: "2.0"
