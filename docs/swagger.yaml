@@ -384,7 +384,7 @@ paths:
       tags:
       - Addresses
   /admin/addresses/{id}/recover:
-    post:
+    patch:
       description: Recover a soft-deleted address (admin only)
       parameters:
       - description: Address ID (UUID)
@@ -487,7 +487,7 @@ paths:
       summary: Delete category
       tags:
       - Categories
-    patch:
+    put:
       consumes:
       - application/json
       description: Update an existing category (admin only)
@@ -532,7 +532,7 @@ paths:
       tags:
       - Categories
   /admin/categories/{id}/recover:
-    post:
+    patch:
       description: Restore a soft-deleted category (admin only)
       parameters:
       - description: Category ID
@@ -901,7 +901,7 @@ paths:
       summary: Delete product
       tags:
       - Products
-    patch:
+    put:
       consumes:
       - application/json
       description: Admin can update product fields by ID
@@ -989,7 +989,7 @@ paths:
       tags:
       - Product Images
   /admin/products/{productId}/recover:
-    post:
+    patch:
       description: Admin can recover a previously deleted product
       parameters:
       - description: Product ID
@@ -1366,7 +1366,41 @@ paths:
       summary: Get own address
       tags:
       - Addresses
-    patch:
+    post:
+      consumes:
+      - application/json
+      description: Create address for logged-in user (user can only have one)
+      parameters:
+      - description: Address request body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/controller.createAddressReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new address
+      tags:
+      - Addresses
+    put:
       consumes:
       - application/json
       description: Update logged-in user's address
@@ -1403,40 +1437,6 @@ paths:
       security:
       - BearerAuth: []
       summary: Update address
-      tags:
-      - Addresses
-    post:
-      consumes:
-      - application/json
-      description: Create address for logged-in user (user can only have one)
-      parameters:
-      - description: Address request body
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/controller.createAddressReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties: true
-            type: object
-      security:
-      - BearerAuth: []
-      summary: Create a new address
       tags:
       - Addresses
   /user/addresses/{id}:

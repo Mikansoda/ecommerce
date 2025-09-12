@@ -11,6 +11,7 @@ import (
 	"ecommerce/entity"
 	"ecommerce/repository"
 
+	"github.com/cloudinary/cloudinary-go/v2"
 	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 )
 
@@ -23,10 +24,15 @@ type ProductImageService interface {
 
 type productImageService struct {
 	repo repository.ProductImageRepository
+	cloud *cloudinary.Cloudinary
 }
 
 func NewProductImageService(repo repository.ProductImageRepository) ProductImageService {
-	return &productImageService{repo: repo}
+	cloud := config.InitCloud()
+	return &productImageService{
+		repo: repo,
+		cloud: cloud,
+	}
 }
 
 func (s *productImageService) Upload(ctx context.Context, productID uint, filePath string, isPrimary bool) (*entity.ProductImage, error) {
@@ -44,10 +50,8 @@ func (s *productImageService) Upload(ctx context.Context, productID uint, filePa
 		return nil, errors.New("failed to open file: " + err.Error())
 	}
 	defer f.Close()
-	// TODO: REVISI INI
-    // Cloud init jangan dipanggil tiap upload
-	cld := config.InitCloud()
-	uploadRes, err := cld.Upload.Upload(ctx, f, uploader.UploadParams{
+
+	uploadRes, err := s.cloud.Upload.Upload(ctx, f, uploader.UploadParams{
 		Folder: "ecommerce/products",
 	})
 	if err != nil {

@@ -73,7 +73,7 @@ const docTemplate = `{
             }
         },
         "/admin/addresses/{id}/recover": {
-            "post": {
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -176,61 +176,7 @@ const docTemplate = `{
             }
         },
         "/admin/categories/{id}": {
-            "delete": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Soft delete a category (admin only)",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Categories"
-                ],
-                "summary": "Delete category",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Category ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "patch": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -295,10 +241,64 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Soft delete a category (admin only)",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Delete category",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Category ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
             }
         },
         "/admin/categories/{id}/recover": {
-            "post": {
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -806,20 +806,23 @@ const docTemplate = `{
             }
         },
         "/admin/products/{productId}": {
-            "delete": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Admin can soft-delete a product by ID",
+                "description": "Admin can update product fields by ID",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Products"
                 ],
-                "summary": "Delete product",
+                "summary": "Update existing product",
                 "parameters": [
                     {
                         "type": "integer",
@@ -827,6 +830,15 @@ const docTemplate = `{
                         "name": "productId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "description": "Updated product data",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.updateProductReq"
+                        }
                     }
                 ],
                 "responses": {
@@ -860,23 +872,20 @@ const docTemplate = `{
                     }
                 }
             },
-            "patch": {
+            "delete": {
                 "security": [
                     {
                         "BearerAuth": []
                     }
                 ],
-                "description": "Admin can update product fields by ID",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Admin can soft-delete a product by ID",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "Products"
                 ],
-                "summary": "Update existing product",
+                "summary": "Delete product",
                 "parameters": [
                     {
                         "type": "integer",
@@ -884,15 +893,6 @@ const docTemplate = `{
                         "name": "productId",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "description": "Updated product data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.updateProductReq"
-                        }
                     }
                 ],
                 "responses": {
@@ -993,7 +993,7 @@ const docTemplate = `{
             }
         },
         "/admin/products/{productId}/recover": {
-            "post": {
+            "patch": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -1559,59 +1559,7 @@ const docTemplate = `{
                     }
                 }
             },
-            "post": {
-                "security": [
-                    {
-                        "BearerAuth": []
-                    }
-                ],
-                "description": "Create address for logged-in user (user can only have one)",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Addresses"
-                ],
-                "summary": "Create a new address",
-                "parameters": [
-                    {
-                        "description": "Address request body",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/controller.createAddressReq"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "patch": {
+            "put": {
                 "security": [
                     {
                         "BearerAuth": []
@@ -1656,6 +1604,58 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            },
+            "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Create address for logged-in user (user can only have one)",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Addresses"
+                ],
+                "summary": "Create a new address",
+                "parameters": [
+                    {
+                        "description": "Address request body",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/controller.createAddressReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": true

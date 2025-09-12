@@ -285,7 +285,7 @@ func (ctl *AddressController) CreateAddress(c *gin.Context) {
 //   "message": "Failed to update address, try again later",
 //   "detail": "some error message"
 // }
-// @Router       /user/addresses [patch]
+// @Router       /user/addresses [put]
 func (ctl *AddressController) UpdateAddress(c *gin.Context) {
 	userID, _ := uuid.Parse(c.GetString("userID"))
 	var req updateAddressReq
@@ -417,7 +417,7 @@ func (ctl *AddressController) DeleteAddress(c *gin.Context) {
 //   "message": "Failed to recover address, try again later",
 //   "detail": "some error message"
 // }
-// @Router       /admin/addresses/{id}/recover [post]
+// @Router       /admin/addresses/{id}/recover [patch]
 func (ctl *AddressController) RecoverAddress(c *gin.Context) {
 	id := c.Param("id")
 	if err := ctl.service.RecoverAddress(c.Request.Context(), id, uuid.Nil); err != nil {

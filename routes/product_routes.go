@@ -40,14 +40,14 @@ func RegisterProductRoutes(r *gin.Engine, db *gorm.DB) {
 	admin := r.Group("/admin", middleware.Auth("admin"))
 	{
 		admin.POST("/categories", categoryCtl.CreateCategory)
-		admin.PATCH("/categories/:id", categoryCtl.UpdateCategory)
+		admin.PUT("/categories/:id", categoryCtl.UpdateCategory)
 		admin.DELETE("/categories/:id", categoryCtl.DeleteCategory)
-		admin.POST("/categories/:id/recover", categoryCtl.RecoverCategory)
+		admin.PATCH("/categories/:id/recover", categoryCtl.RecoverCategory)
 
 		admin.POST("/products", productCtl.CreateProduct)
-		admin.PATCH("/products/:productId", productCtl.UpdateProduct)
+		admin.PUT("/products/:productId", productCtl.UpdateProduct)
 		admin.DELETE("/products/:productId", productCtl.DeleteProduct)
-		admin.POST("/products/:productId/recover", productCtl.RecoverProduct)
+		admin.PATCH("/products/:productId/recover", productCtl.RecoverProduct)
         // 5 req/menit
 		admin.POST("/products/:productId/images", middleware.RateLimit(5, time.Minute), imageCtl.UploadImage)
 		admin.DELETE("/images/:imageId", middleware.RateLimit(10, time.Minute), imageCtl.DeleteImage)

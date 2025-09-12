@@ -28,6 +28,6 @@ func RegisterAddressRoutes(r *gin.Engine, db *gorm.DB) {
 	adminApi := r.Group("/admin", middleware.Auth("admin"))
 	{   // GET /admin/addresses?search=Jakarta&limit=5&offset=10
 		adminApi.GET("/addresses", addressCtl.GetAddresses) // get all addresses
-		adminApi.POST("/addresses/:id/recover", addressCtl.RecoverAddress)
+		adminApi.PATCH("/addresses/:id/recover", addressCtl.RecoverAddress)
 	}
 }

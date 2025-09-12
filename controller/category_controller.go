@@ -166,7 +166,7 @@ func (ctl *CategoryController) CreateCategory(c *gin.Context) {
 //   "message": "Failed to update category, try again later",
 //   "detail": "some error message"
 // }
-// @Router       /admin/categories/{id} [patch]
+// @Router       /admin/categories/{id} [put]
 func (ctl *CategoryController) UpdateCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -309,7 +309,7 @@ func (ctl *CategoryController) DeleteCategory(c *gin.Context) {
 //   "message": "Failed to recover category, try again later",
 //   "detail": "some error message"
 // }
-// @Router       /admin/categories/{id}/recover [post]
+// @Router       /admin/categories/{id}/recover [patch]
 func (ctl *CategoryController) RecoverCategory(c *gin.Context) {
 	idStr := c.Param("id")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)

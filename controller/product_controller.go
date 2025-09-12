@@ -293,7 +293,7 @@ func (ctl *ProductController) CreateProduct(c *gin.Context) {
 //   "message": "Failed to update product, try again later",
 //   "detail": "some error message"
 // }
-// @Router       /admin/products/{productId} [patch]
+// @Router       /admin/products/{productId} [put]
 func (ctl *ProductController) UpdateProduct(c *gin.Context) {
 	idStr := c.Param("productId")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
@@ -455,7 +455,7 @@ func (ctl *ProductController) DeleteProduct(c *gin.Context) {
 //   "message": "Failed to recover product, try again later",
 //   "detail": "some error message"
 // }
-// @Router       /admin/products/{productId}/recover [post]
+// @Router       /admin/products/{productId}/recover [patch]
 func (ctl *ProductController) RecoverProduct(c *gin.Context) {
 	idStr := c.Param("productId")
 	idUint64, err := strconv.ParseUint(idStr, 10, 32)
